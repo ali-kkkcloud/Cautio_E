@@ -478,42 +478,6 @@
             transition: width 0.3s ease;
         }
 
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 2000;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .modal-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            max-width: 500px;
-            width: 90%;
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #666;
-        }
-
         .notification {
             position: fixed;
             top: 20px;
@@ -567,19 +531,6 @@
             }
         }
 
-        .dark-mode {
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-        }
-
-        .dark-mode .container {
-            background: #34495e;
-            color: #ecf0f1;
-        }
-
-        .dark-mode .section {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-        }
-
         .loading {
             display: inline-block;
             width: 20px;
@@ -604,7 +555,7 @@
         </div>
         <div style="font-size: 0.8rem;">
             <div>Connection: <span id="mini-status">Testing...</span></div>
-            <div>Mode: <span id="mini-mode">Unknown</span></div>
+            <div>Mode: <span id="mini-mode">Local</span></div>
             <div>Time: <span id="current-time">--:--</span></div>
         </div>
     </div>
@@ -612,7 +563,7 @@
     <div class="container">
         <div class="header">
             <h1>🏢 Advanced Employee Management System</h1>
-            <p>Complete workforce management with real-time tracking and analytics</p>
+            <p>Complete workforce management with real-time tracking</p>
         </div>
 
         <!-- Login Section -->
@@ -669,7 +620,6 @@
                     </div>
                 </div>
                 <div>
-                    <button class="btn btn-warning btn-small" onclick="toggleTheme()">🌙 Dark Mode</button>
                     <button class="btn btn-danger btn-small" onclick="logout()">🚪 Logout</button>
                 </div>
             </div>
@@ -708,50 +658,33 @@
                     </div>
                 </div>
 
-                <!-- System Status & Setup -->
+                <!-- System Status -->
                 <div class="section">
-                    <h3>⚙️ System Configuration</h3>
+                    <h3>⚙️ System Status</h3>
                     <div id="system-status">
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
                             <div>
-                                <strong>📡 Connection Status:</strong><br>
-                                <span id="connection-status">Testing...</span>
+                                <strong>📡 Connection:</strong><br>
+                                <span id="connection-status">Local Mode</span>
                             </div>
                             <div>
-                                <strong>📋 Sheet ID:</strong><br>
-                                <code style="font-size: 0.8rem;">${CONFIG.SHEET_ID}</code>
+                                <strong>💾 Storage:</strong><br>
+                                <span id="storage-status">Browser Storage</span>
                             </div>
                             <div>
-                                <strong>🔗 Apps Script:</strong><br>
-                                <span id="script-status">Not configured</span>
-                            </div>
-                            <div>
-                                <strong>🚀 Current Mode:</strong><br>
-                                <span id="current-mode">Unknown</span>
+                                <strong>📊 Data Source:</strong><br>
+                                <span id="data-source">In-Memory</span>
                             </div>
                         </div>
                         
-                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                            <button class="btn btn-info btn-small" onclick="testConnection()">🔄 Test Connection</button>
-                            <button class="btn btn-warning btn-small" onclick="refreshData()">♻️ Refresh Data</button>
-                            <button class="btn btn-success btn-small" onclick="exportData()">📥 Export Data</button>
-                            <button class="btn btn-small" onclick="showSetupModal()">⚡ Quick Setup</button>
-                        </div>
-                        
-                        <div id="setup-warning" style="background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%); padding: 1rem; border-radius: 8px; margin-top: 1rem; border: 1px solid #ffeaa7;">
-                            <h4>⚠️ Setup Required for Full Functionality</h4>
-                            <p>To enable employee add/edit features, configure Google Apps Script:</p>
-                            <ol style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
-                                <li>Visit <a href="https://script.google.com" target="_blank" style="color: #667eea;">script.google.com</a></li>
-                                <li>Create new project and paste the provided code</li>
-                                <li>Deploy as Web App with "Anyone" access</li>
-                                <li>Update APPS_SCRIPT_URL in configuration</li>
-                            </ol>
+                        <div style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); padding: 1rem; border-radius: 8px; margin-top: 1rem; border: 1px solid #bbdefb;">
+                            <h4>ℹ️ Local Mode Active</h4>
+                            <p>System is running in local mode. All data is stored in browser memory and will be reset on page refresh. This demo showcases the UI and functionality without requiring external services.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Advanced Employee Management -->
+                <!-- Employee Management -->
                 <div class="section">
                     <h3>➕ Add New Employee</h3>
                     <div id="add-employee-message"></div>
@@ -796,11 +729,11 @@
                             <span id="add-employee-text">✨ Add Employee</span>
                         </button>
                         <button class="btn btn-warning" onclick="clearAddForm()">🧹 Clear Form</button>
-                        <button class="btn btn-info" onclick="showBulkAddModal()">📋 Bulk Add</button>
+                        <button class="btn btn-info" onclick="loadSampleData()">📋 Load Sample Data</button>
                     </div>
                 </div>
 
-                <!-- Employee Search & Filter -->
+                <!-- Employee Directory -->
                 <div class="section">
                     <h3>🔍 Employee Directory</h3>
                     <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
@@ -830,7 +763,7 @@
                         <!-- Employee items will be populated here -->
                     </div>
                     
-                    <div id="no-employees" style="text-align: center; padding: 2rem; color: #666; display: none;">
+                    <div id="no-employees" style="text-align: center; padding: 2rem; color: #666;">
                         <div style="font-size: 3rem; margin-bottom: 1rem;">👥</div>
                         <h3>No Employees Found</h3>
                         <p>Add some employees to get started!</p>
@@ -859,7 +792,7 @@
                         
                         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
                             <button class="btn btn-small" id="break-btn" onclick="toggleBreak()">☕ Take Break</button>
-                            <button class="btn btn-info btn-small" onclick="showActivityModal()">📈 View Activity</button>
+                            <button class="btn btn-info btn-small" onclick="viewActivity()">📈 View Activity</button>
                             <button class="btn btn-warning btn-small" onclick="reportIssue()">⚠️ Report Issue</button>
                         </div>
                     </div>
@@ -913,54 +846,10 @@
         </div>
     </div>
 
-    <!-- Modals -->
-    <div class="modal" id="setup-modal">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeModal('setup-modal')">&times;</button>
-            <h3>⚡ Quick Setup Guide</h3>
-            <div style="margin: 1rem 0;">
-                <h4>Step 1: Create Apps Script</h4>
-                <p>1. Go to <a href="https://script.google.com" target="_blank">script.google.com</a></p>
-                <p>2. Click "New Project"</p>
-                <p>3. Paste the provided Google Apps Script code</p>
-                
-                <h4>Step 2: Deploy</h4>
-                <p>1. Click "Deploy" → "New Deployment"</p>
-                <p>2. Select "Web app" type</p>
-                <p>3. Set "Execute as: Me" and "Access: Anyone"</p>
-                <p>4. Copy the Web App URL</p>
-                
-                <h4>Step 3: Update Configuration</h4>
-                <p>Replace the APPS_SCRIPT_URL in your code with the copied URL</p>
-            </div>
-            <button class="btn" onclick="closeModal('setup-modal')">Got it! 👍</button>
-        </div>
-    </div>
-
-    <div class="modal" id="bulk-add-modal">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeModal('bulk-add-modal')">&times;</button>
-            <h3>📋 Bulk Add Employees</h3>
-            <div class="form-group">
-                <label>Enter employee data (CSV format):</label>
-                <textarea id="bulk-data" rows="10" placeholder="ID,Name,Department,Position
-EMP001,John Doe,IT,Developer
-EMP002,Jane Smith,HR,Manager"></textarea>
-            </div>
-            <div style="display: flex; gap: 0.5rem;">
-                <button class="btn" onclick="processBulkAdd()">📥 Import</button>
-                <button class="btn btn-warning" onclick="closeModal('bulk-add-modal')">Cancel</button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // Configuration
+        // Configuration - Local Mode
         const CONFIG = {
-            SHEET_ID: '15pNN3vIuLFug6nlL-GN0uwvkasLokGwPO5kTxmPIZZw',
-            API_KEY: 'AIzaSyDf1wG69f52niXnEZ2PaeBxtuYaf_aRMp8',
-            // Replace this with your Google Apps Script Web App URL
-            APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbw3DMHhFH02db9xdTyHbxLNiajavLUV2oEK9YHrO5xJGItnhWnTpP8aGl033sxboMTsEA/exec',
+            MODE: 'LOCAL', // LOCAL mode for demo
             ADMIN_CREDENTIALS: {
                 username: 'admin',
                 password: 'admin123'
@@ -971,164 +860,95 @@ EMP002,Jane Smith,HR,Manager"></textarea>
         let currentUser = null;
         let employees = [];
         let isLoggedIn = false;
-        let isDarkMode = false;
         let refreshInterval = null;
 
-        // Google Apps Script API Helper Class
-        class GoogleAppsScriptAPI {
-            constructor(scriptUrl, fallbackSheetId, fallbackApiKey) {
-                this.scriptUrl = scriptUrl;
-                this.fallbackSheetId = fallbackSheetId;
-                this.fallbackApiKey = fallbackApiKey;
-                this.baseUrl = 'https://sheets.googleapis.com/v4/spreadsheets';
-            }
-
-            async makeRequest(action, data = {}) {
-                try {
-                    const requestData = { action, ...data };
-                    console.log('Sending request:', requestData);
-                    
-                    const response = await fetch(this.scriptUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(requestData)
-                    });
-
-                    console.log('Response status:', response.status);
-
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        console.error('Response error:', errorText);
-                        throw new Error(`Apps Script Error: ${response.status} - ${errorText}`);
+        // Local Storage Simulation
+        class LocalDataManager {
+            constructor() {
+                this.employees = [
+                    {
+                        id: 'EMP001',
+                        name: 'John Doe',
+                        department: 'IT',
+                        position: 'Software Developer',
+                        status: 'working',
+                        loginTime: '09:00',
+                        breakTime: 15,
+                        lastActivity: new Date().toISOString(),
+                        email: 'john.doe@company.com',
+                        phone: '+91 9876543210'
+                    },
+                    {
+                        id: 'EMP002',
+                        name: 'Jane Smith',
+                        department: 'HR',
+                        position: 'HR Manager',
+                        status: 'on-break',
+                        loginTime: '09:15',
+                        breakTime: 30,
+                        lastActivity: new Date().toISOString(),
+                        email: 'jane.smith@company.com',
+                        phone: '+91 9876543211'
+                    },
+                    {
+                        id: 'EMP003',
+                        name: 'Mike Johnson',
+                        department: 'Finance',
+                        position: 'Accountant',
+                        status: 'logged-out',
+                        loginTime: null,
+                        breakTime: 0,
+                        lastActivity: new Date().toISOString(),
+                        email: 'mike.j@company.com',
+                        phone: '+91 9876543212'
                     }
-
-                    const result = await response.json();
-                    console.log('Response result:', result);
-                    
-                    if (result.error) {
-                        throw new Error(result.error);
-                    }
-                    
-                    return result;
-                } catch (error) {
-                    console.error('Apps Script request failed:', error);
-                    throw error;
-                }
+                ];
             }
 
             async getEmployees() {
-                try {
-                    // Try Apps Script first
-                    if (this.scriptUrl && !this.scriptUrl.includes('YOUR_SCRIPT_ID')) {
-                        console.log('Fetching employees via Apps Script...');
-                        const result = await this.makeRequest('getEmployees');
-                        return result.employees || [];
-                    } else {
-                        // Fallback to direct API for reading only
-                        console.log('Using fallback API for reading...');
-                        return await this.getEmployeesViaAPI();
-                    }
-                } catch (error) {
-                    console.error('Error fetching employees:', error);
-                    // Try fallback API
-                    try {
-                        return await this.getEmployeesViaAPI();
-                    } catch (fallbackError) {
-                        console.error('Fallback also failed:', fallbackError);
-                        return [];
-                    }
-                }
-            }
-
-            async getEmployeesViaAPI() {
-                const url = `${this.baseUrl}/${this.fallbackSheetId}/values/Sheet1?key=${this.fallbackApiKey}`;
-                const response = await fetch(url);
-                
-                if (!response.ok) {
-                    throw new Error(`API Error: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                if (!data.values || data.values.length <= 1) {
-                    return [];
-                }
-
-                const employees = [];
-                for (let i = 1; i < data.values.length; i++) {
-                    const row = data.values[i];
-                    if (row[0]) {
-                        employees.push({
-                            id: row[0] || '',
-                            name: row[1] || '',
-                            department: row[2] || '',
-                            position: row[3] || '',
-                            status: row[4] || 'logged-out',
-                            loginTime: row[5] || null,
-                            breakTime: parseInt(row[6]) || 0,
-                            lastActivity: row[7] || new Date().toISOString(),
-                            email: row[8] || '',
-                            phone: row[9] || ''
-                        });
-                    }
-                }
-                return employees;
+                return [...this.employees];
             }
 
             async addEmployee(employee) {
-                if (this.scriptUrl && !this.scriptUrl.includes('YOUR_SCRIPT_ID')) {
-                    console.log('Adding employee via Apps Script...');
-                    return await this.makeRequest('addEmployee', { employee });
-                } else {
-                    throw new Error('Google Apps Script URL not configured. Writing to sheets requires Apps Script setup.');
-                }
+                const newEmployee = {
+                    ...employee,
+                    status: 'logged-out',
+                    loginTime: null,
+                    breakTime: 0,
+                    lastActivity: new Date().toISOString()
+                };
+                this.employees.push(newEmployee);
+                return { success: true, message: 'Employee added successfully' };
             }
 
             async updateEmployeeStatus(employeeId, status, loginTime = null, breakTime = 0) {
-                if (this.scriptUrl && !this.scriptUrl.includes('YOUR_SCRIPT_ID')) {
-                    console.log('Updating employee status via Apps Script...');
-                    const updates = {
-                        status,
-                        loginTime,
-                        breakTime,
-                        lastActivity: new Date().toISOString()
-                    };
-                    return await this.makeRequest('updateEmployee', { employeeId, updates });
-                } else {
-                    console.log('Apps Script not configured, status update skipped');
-                    return { success: true, message: 'Status updated locally only' };
+                const employee = this.employees.find(emp => emp.id === employeeId);
+                if (employee) {
+                    employee.status = status;
+                    if (loginTime) employee.loginTime = loginTime;
+                    employee.breakTime = breakTime;
+                    employee.lastActivity = new Date().toISOString();
+                    return { success: true, message: 'Status updated successfully' };
                 }
+                return { success: false, message: 'Employee not found' };
             }
 
             async removeEmployee(employeeId) {
-                if (this.scriptUrl && !this.scriptUrl.includes('YOUR_SCRIPT_ID')) {
-                    console.log('Removing employee via Apps Script...');
-                    return await this.makeRequest('removeEmployee', { employeeId });
-                } else {
-                    throw new Error('Google Apps Script URL not configured. Writing to sheets requires Apps Script setup.');
+                const index = this.employees.findIndex(emp => emp.id === employeeId);
+                if (index > -1) {
+                    this.employees.splice(index, 1);
+                    return { success: true, message: 'Employee removed successfully' };
                 }
+                return { success: false, message: 'Employee not found' };
             }
 
             async testConnection() {
-                try {
-                    if (this.scriptUrl && !this.scriptUrl.includes('YOUR_SCRIPT_ID')) {
-                        await this.makeRequest('getEmployees');
-                        return { success: true, message: 'Apps Script connection successful', type: 'apps-script' };
-                    } else {
-                        // Test fallback API
-                        await this.getEmployeesViaAPI();
-                        return { success: true, message: 'API connection successful (read-only)', type: 'api-readonly' };
-                    }
-                } catch (error) {
-                    return { success: false, message: error.message, type: 'failed' };
-                }
+                return { success: true, message: 'Local mode connection successful', type: 'local' };
             }
         }
 
-        // Initialize Google Apps Script API
-        const sheetsAPI = new GoogleAppsScriptAPI(CONFIG.APPS_SCRIPT_URL, CONFIG.SHEET_ID, CONFIG.API_KEY);
+        // Initialize Local Data Manager
+        const dataManager = new LocalDataManager();
 
         // Authentication functions
         function switchAuthTab(type) {
@@ -1177,7 +997,7 @@ EMP002,Jane Smith,HR,Manager"></textarea>
             buttonText.innerHTML = '<div class="loading"></div> Logging in...';
             
             try {
-                employees = await sheetsAPI.getEmployees();
+                employees = await dataManager.getEmployees();
                 const employee = employees.find(emp => emp.id === employeeId);
 
                 if (employee) {
@@ -1191,7 +1011,7 @@ EMP002,Jane Smith,HR,Manager"></textarea>
                         minute: '2-digit'
                     });
                     
-                    await sheetsAPI.updateEmployeeStatus(employeeId, 'working', loginTime, 0);
+                    await dataManager.updateEmployeeStatus(employeeId, 'working', loginTime, 0);
                     
                     showMainSection();
                     showNotification(`Welcome back, ${employee.name}!`, 'success');
@@ -1209,7 +1029,7 @@ EMP002,Jane Smith,HR,Manager"></textarea>
         async function logout() {
             if (currentUser && currentUser.type === 'employee') {
                 try {
-                    await sheetsAPI.updateEmployeeStatus(currentUser.id, 'logged-out', null, currentUser.breakTime || 0);
+                    await dataManager.updateEmployeeStatus(currentUser.id, 'logged-out', null, currentUser.breakTime || 0);
                     showNotification('Logged out successfully!', 'success');
                 } catch (error) {
                     console.error('Logout error:', error);
@@ -1248,13 +1068,13 @@ EMP002,Jane Smith,HR,Manager"></textarea>
                 document.getElementById('employee-dashboard').style.display = 'none';
                 loadAdminDashboard();
                 // Start auto-refresh for admin
-                refreshInterval = setInterval(loadAdminDashboard, 30000); // Refresh every 30 seconds
+                refreshInterval = setInterval(loadAdminDashboard, 30000);
             } else {
                 document.getElementById('admin-dashboard').style.display = 'none';
                 document.getElementById('employee-dashboard').style.display = 'block';
                 loadEmployeeDashboard();
                 // Start auto-refresh for employee
-                refreshInterval = setInterval(updateEmployeeData, 60000); // Refresh every minute
+                refreshInterval = setInterval(updateEmployeeData, 60000);
             }
         }
 
@@ -1262,25 +1082,14 @@ EMP002,Jane Smith,HR,Manager"></textarea>
         async function loadAdminDashboard() {
             try {
                 console.log('Loading admin dashboard...');
-                employees = await sheetsAPI.getEmployees();
+                employees = await dataManager.getEmployees();
                 console.log('Loaded employees for dashboard:', employees);
                 updateStats();
                 renderEmployeeList();
-                updateConnectionStatus('connected', 'Online');
+                updateConnectionStatus('connected', 'Local Mode');
             } catch (error) {
                 console.error('Error loading admin dashboard:', error);
                 updateConnectionStatus('disconnected', 'Error');
-                
-                let errorMessage = 'Error loading employee data. ';
-                if (error.message.includes('403')) {
-                    errorMessage += 'Permission denied. Please make your Google Sheet publicly accessible.';
-                } else if (error.message.includes('404')) {
-                    errorMessage += 'Sheet not found. Please check the Sheet ID in the URL.';
-                } else {
-                    errorMessage += 'Please check your internet connection and API settings.';
-                }
-                
-                showMessage('add-employee-message', errorMessage, 'error');
                 employees = [];
                 updateStats();
                 renderEmployeeList();
@@ -1401,8 +1210,6 @@ EMP002,Jane Smith,HR,Manager"></textarea>
             const phone = document.getElementById('new-employee-phone').value.trim();
             const buttonText = document.getElementById('add-employee-text');
 
-            console.log('Attempting to add employee:', { id, name, department, position, email, phone });
-
             if (!id || !name || !department || !position) {
                 showMessage('add-employee-message', 'Please fill all required fields!', 'error');
                 return;
@@ -1414,18 +1221,11 @@ EMP002,Jane Smith,HR,Manager"></textarea>
                 return;
             }
 
-            // Check if Apps Script is configured
-            if (CONFIG.APPS_SCRIPT_URL.includes('YOUR_SCRIPT_ID')) {
-                showMessage('add-employee-message', 'Google Apps Script not configured. Please follow the setup instructions above.', 'error');
-                return;
-            }
-
             buttonText.innerHTML = '<div class="loading"></div> Adding...';
 
             try {
                 // Check if employee already exists
-                const currentEmployees = await sheetsAPI.getEmployees();
-                console.log('Current employees:', currentEmployees);
+                const currentEmployees = await dataManager.getEmployees();
                 
                 if (currentEmployees.find(emp => emp.id === id)) {
                     showMessage('add-employee-message', 'Employee ID already exists! Please use a different ID.', 'error');
@@ -1434,10 +1234,8 @@ EMP002,Jane Smith,HR,Manager"></textarea>
                 }
 
                 const newEmployee = { id, name, department, position, email, phone };
-                console.log('New employee object:', newEmployee);
                 
-                const result = await sheetsAPI.addEmployee(newEmployee);
-                console.log('Add employee result:', result);
+                const result = await dataManager.addEmployee(newEmployee);
                 
                 // Clear form
                 clearAddForm();
@@ -1448,25 +1246,11 @@ EMP002,Jane Smith,HR,Manager"></textarea>
                 // Refresh the employee list
                 setTimeout(async () => {
                     await loadAdminDashboard();
-                }, 2000);
+                }, 1000);
                 
             } catch (error) {
                 console.error('Error adding employee:', error);
-                
-                let errorMessage = 'Error adding employee. ';
-                if (error.message.includes('not configured')) {
-                    errorMessage = 'Google Apps Script not configured. Please set up Apps Script first.';
-                } else if (error.message.includes('403')) {
-                    errorMessage += 'Permission denied. Please check Google Apps Script permissions.';
-                } else if (error.message.includes('400')) {
-                    errorMessage += 'Bad request. Please check the data format.';
-                } else if (error.message.includes('404')) {
-                    errorMessage += 'Apps Script not found. Please check the deployment URL.';
-                } else {
-                    errorMessage += error.message;
-                }
-                
-                showMessage('add-employee-message', errorMessage, 'error');
+                showMessage('add-employee-message', 'Error adding employee: ' + error.message, 'error');
             }
             
             buttonText.textContent = '✨ Add Employee';
@@ -1487,7 +1271,7 @@ EMP002,Jane Smith,HR,Manager"></textarea>
 
             if (confirm(`Are you sure you want to remove ${employee.name}? This action cannot be undone.`)) {
                 try {
-                    await sheetsAPI.removeEmployee(employeeId);
+                    await dataManager.removeEmployee(employeeId);
                     await loadAdminDashboard();
                     showMessage('add-employee-message', `${employee.name} has been removed successfully.`, 'success');
                     showNotification(`${employee.name} removed from system`, 'warning');
@@ -1498,18 +1282,21 @@ EMP002,Jane Smith,HR,Manager"></textarea>
             }
         }
 
+        function loadSampleData() {
+            showNotification('Sample data already loaded!', 'success');
+        }
+
         // Employee Dashboard Functions
         async function loadEmployeeDashboard() {
             try {
-                employees = await sheetsAPI.getEmployees();
+                employees = await dataManager.getEmployees();
                 const employee = employees.find(emp => emp.id === currentUser.id);
                 if (employee) {
-                    // Update current user data
                     Object.assign(currentUser, employee);
                     updateEmployeeStatus(employee);
                     updateEmployeeDisplay(employee);
                 }
-                updateConnectionStatus('connected', 'Online');
+                updateConnectionStatus('connected', 'Local Mode');
             } catch (error) {
                 console.error('Error loading employee dashboard:', error);
                 updateConnectionStatus('disconnected', 'Error');
@@ -1583,7 +1370,7 @@ EMP002,Jane Smith,HR,Manager"></textarea>
                         showNotification('Welcome back! Break ended 🔙', 'success');
                     }
                     
-                    await sheetsAPI.updateEmployeeStatus(currentUser.id, newStatus, employee.loginTime, newBreakTime);
+                    await dataManager.updateEmployeeStatus(currentUser.id, newStatus, employee.loginTime, newBreakTime);
                     
                     // Update local data
                     employee.status = newStatus;
@@ -1600,64 +1387,6 @@ EMP002,Jane Smith,HR,Manager"></textarea>
         }
 
         // Utility Functions
-        async function testConnection() {
-            const statusEl = document.getElementById('connection-status');
-            const modeEl = document.getElementById('current-mode');
-            const setupWarning = document.getElementById('setup-warning');
-            const scriptStatus = document.getElementById('script-status');
-            
-            statusEl.textContent = 'Testing...';
-            statusEl.style.color = 'orange';
-            updateConnectionStatus('testing', 'Testing...');
-            
-            try {
-                const result = await sheetsAPI.testConnection();
-                console.log('Connection test result:', result);
-                
-                if (result.success) {
-                    statusEl.textContent = '✓ ' + result.message;
-                    statusEl.style.color = 'green';
-                    
-                    if (result.type === 'apps-script') {
-                        modeEl.textContent = 'Full functionality (Apps Script configured)';
-                        modeEl.style.color = 'green';
-                        scriptStatus.textContent = '✓ Configured';
-                        scriptStatus.style.color = 'green';
-                        setupWarning.style.display = 'none';
-                        updateConnectionStatus('connected', 'Full Access');
-                    } else {
-                        modeEl.textContent = 'Read-only mode (Apps Script not configured)';
-                        modeEl.style.color = 'orange';
-                        scriptStatus.textContent = '⚠️ Not configured';
-                        scriptStatus.style.color = 'orange';
-                        setupWarning.style.display = 'block';
-                        updateConnectionStatus('connected', 'Read-only');
-                    }
-                    
-                    // Also update employee list
-                    if (currentUser && currentUser.type === 'admin') {
-                        await loadAdminDashboard();
-                    }
-                } else {
-                    statusEl.textContent = '✗ ' + result.message;
-                    statusEl.style.color = 'red';
-                    modeEl.textContent = 'Connection failed';
-                    modeEl.style.color = 'red';
-                    scriptStatus.textContent = '✗ Failed';
-                    scriptStatus.style.color = 'red';
-                    updateConnectionStatus('disconnected', 'Failed');
-                }
-                
-            } catch (error) {
-                console.error('Connection test failed:', error);
-                statusEl.textContent = '✗ Connection failed - ' + error.message;
-                statusEl.style.color = 'red';
-                modeEl.textContent = 'Connection failed';
-                modeEl.style.color = 'red';
-                updateConnectionStatus('disconnected', 'Error');
-            }
-        }
-
         function updateConnectionStatus(status, message) {
             const dot = document.getElementById('connection-dot');
             const miniStatus = document.getElementById('mini-status');
@@ -1665,95 +1394,52 @@ EMP002,Jane Smith,HR,Manager"></textarea>
             
             dot.className = `connection-indicator ${status}`;
             miniStatus.textContent = message;
-            
-            if (status === 'connected') {
-                miniMode.textContent = CONFIG.APPS_SCRIPT_URL.includes('YOUR_SCRIPT_ID') ? 'Read-only' : 'Full Access';
-            } else {
-                miniMode.textContent = status.charAt(0).toUpperCase() + status.slice(1);
-            }
+            miniMode.textContent = 'Local Mode';
         }
 
-        async function refreshData() {
-            showNotification('Refreshing data...', 'warning');
-            if (currentUser.type === 'admin') {
-                await loadAdminDashboard();
-            } else {
-                await loadEmployeeDashboard();
-            }
-            showNotification('Data refreshed successfully!', 'success');
+        function updateCurrentTime() {
+            const now = new Date();
+            document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit'
+            });
         }
 
-        function exportData() {
-            const csvContent = "data:text/csv;charset=utf-8," + 
-                "Employee_ID,Name,Department,Position,Status,Login_Time,Break_Time,Last_Activity\n" +
-                employees.map(emp => `${emp.id},${emp.name},${emp.department},${emp.position},${emp.status},${emp.loginTime || ''},${emp.breakTime || 0},${emp.lastActivity}`).join('\n');
-            
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `employees_${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            showNotification('Data exported successfully!', 'success');
-        }
-
-        function toggleTheme() {
-            isDarkMode = !isDarkMode;
-            document.body.classList.toggle('dark-mode', isDarkMode);
-            const btn = event.target;
-            btn.textContent = isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode';
-            
-            // Save preference
-            localStorage.setItem('darkMode', isDarkMode);
-            showNotification(`Switched to ${isDarkMode ? 'dark' : 'light'} mode`, 'success');
-        }
-
-        // Modal Functions
-        function showSetupModal() {
-            document.getElementById('setup-modal').style.display = 'block';
-        }
-
-        function showBulkAddModal() {
-            document.getElementById('bulk-add-modal').style.display = 'block';
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-
-        function processBulkAdd() {
-            const bulkData = document.getElementById('bulk-data').value;
-            if (!bulkData.trim()) {
-                showNotification('Please enter CSV data!', 'error');
-                return;
-            }
-            
-            const lines = bulkData.trim().split('\n');
-            const employees = [];
-            
-            for (let i = 1; i < lines.length; i++) { // Skip header
-                const [id, name, department, position] = lines[i].split(',');
-                if (id && name && department && position) {
-                    employees.push({ id: id.trim(), name: name.trim(), department: department.trim(), position: position.trim() });
+        async function updateEmployeeData() {
+            if (currentUser && currentUser.type === 'employee') {
+                try {
+                    employees = await dataManager.getEmployees();
+                    const employee = employees.find(emp => emp.id === currentUser.id);
+                    if (employee) {
+                        Object.assign(currentUser, employee);
+                        updateEmployeeStatus(employee);
+                    }
+                } catch (error) {
+                    console.error('Error updating employee data:', error);
                 }
             }
+        }
+
+        // Show message function
+        function showMessage(elementId, message, type) {
+            const messageEl = document.getElementById(elementId);
+            messageEl.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => {
+                messageEl.innerHTML = '';
+            }, 5000);
+        }
+
+        // Show notification function
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
             
-            if (employees.length === 0) {
-                showNotification('No valid employee data found!', 'error');
-                return;
-            }
-            
-            showNotification(`Processing ${employees.length} employees...`, 'warning');
-            
-            // Process each employee (simplified for demo)
-            employees.forEach(emp => {
-                console.log('Would add employee:', emp);
-            });
-            
-            closeModal('bulk-add-modal');
-            showNotification(`${employees.length} employees would be added! (Feature in development)`, 'success');
+            setTimeout(() => {
+                notification.remove();
+            }, 4000);
         }
 
         // Employee functions
@@ -1786,7 +1472,7 @@ EMP002,Jane Smith,HR,Manager"></textarea>
             showNotification('Settings feature coming soon!', 'warning');
         }
 
-        function showActivityModal() {
+        function viewActivity() {
             showNotification('Activity details feature coming soon!', 'warning');
         }
 
@@ -1796,150 +1482,35 @@ EMP002,Jane Smith,HR,Manager"></textarea>
 
         // Initialize the application
         async function init() {
-            updateUI();
-            console.log('Initializing application...');
+            console.log('Initializing application in local mode...');
             
-            // Load theme preference
-            const savedTheme = localStorage.getItem('darkMode') === 'true';
-            if (savedTheme) {
-                toggleTheme();
-            }
+            // Update connection status
+            updateConnectionStatus('connected', 'Local Mode');
             
-            // Test connection and determine capabilities
+            // Update status elements
+            document.getElementById('connection-status').textContent = '✓ Local mode active';
+            document.getElementById('connection-status').style.color = 'green';
+            document.getElementById('storage-status').textContent = '✓ Browser memory';
+            document.getElementById('storage-status').style.color = 'green';
+            document.getElementById('data-source').textContent = '✓ In-memory simulation';
+            document.getElementById('data-source').style.color = 'green';
+            
+            // Load initial employee data
             try {
-                console.log('Testing connection and capabilities...');
-                const result = await sheetsAPI.testConnection();
-                console.log('Connection test result:', result);
-                
-                // Update connection status if element exists
-                const statusEl = document.getElementById('connection-status');
-                const modeEl = document.getElementById('current-mode');
-                const setupWarning = document.getElementById('setup-warning');
-                const scriptStatus = document.getElementById('script-status');
-                
-                if (statusEl && result.success) {
-                    statusEl.textContent = '✓ ' + result.message;
-                    statusEl.style.color = 'green';
-                    
-                    if (modeEl) {
-                        if (result.type === 'apps-script') {
-                            modeEl.textContent = 'Full functionality (Apps Script configured)';
-                            modeEl.style.color = 'green';
-                            if (scriptStatus) {
-                                scriptStatus.textContent = '✓ Configured';
-                                scriptStatus.style.color = 'green';
-                            }
-                            if (setupWarning) setupWarning.style.display = 'none';
-                            updateConnectionStatus('connected', 'Full Access');
-                        } else {
-                            modeEl.textContent = 'Read-only mode (Apps Script not configured)';
-                            modeEl.style.color = 'orange';
-                            if (scriptStatus) {
-                                scriptStatus.textContent = '⚠️ Not configured';
-                                scriptStatus.style.color = 'orange';
-                            }
-                            if (setupWarning) setupWarning.style.display = 'block';
-                            updateConnectionStatus('connected', 'Read-only');
-                        }
-                    }
-                } else if (statusEl) {
-                    statusEl.textContent = '✗ ' + (result.message || 'Connection failed');
-                    statusEl.style.color = 'red';
-                    if (modeEl) {
-                        modeEl.textContent = 'Connection failed';
-                        modeEl.style.color = 'red';
-                    }
-                    updateConnectionStatus('disconnected', 'Failed');
-                }
-                
+                employees = await dataManager.getEmployees();
+                console.log('Initial employee data loaded:', employees);
             } catch (error) {
-                console.error('Connection test failed during init:', error);
-                
-                // Update connection status if element exists
-                const statusEl = document.getElementById('connection-status');
-                if (statusEl) {
-                    statusEl.textContent = '✗ Connection failed - ' + error.message;
-                    statusEl.style.color = 'red';
-                }
-                updateConnectionStatus('disconnected', 'Error');
+                console.error('Error loading initial data:', error);
+                employees = [];
             }
-            
-            await loadEmployeeData();
             
             // Start time updater
             setInterval(updateCurrentTime, 1000);
-        }
-
-        function updateCurrentTime() {
-            const now = new Date();
-            document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', {
-                hour12: false,
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
-
-        // Load employee data from Google Sheets
-        async function loadEmployeeData() {
-            try {
-                employees = await sheetsAPI.getEmployees();
-                console.log('Employee data loaded:', employees);
-            } catch (error) {
-                console.error('Error loading employee data:', error);
-                employees = []; // Fallback to empty array
-            }
-        }
-
-        // Update employee data
-        async function updateEmployeeData() {
-            if (currentUser && currentUser.type === 'employee') {
-                try {
-                    employees = await sheetsAPI.getEmployees();
-                    const employee = employees.find(emp => emp.id === currentUser.id);
-                    if (employee) {
-                        Object.assign(currentUser, employee);
-                        updateEmployeeStatus(employee);
-                    }
-                } catch (error) {
-                    console.error('Error updating employee data:', error);
-                }
-            }
-        }
-
-        function updateUI() {
-            // Any UI updates needed on init
-        }
-
-        // Show message function
-        function showMessage(elementId, message, type) {
-            const messageEl = document.getElementById(elementId);
-            messageEl.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
-            setTimeout(() => {
-                messageEl.innerHTML = '';
-            }, 5000);
-        }
-
-        // Show notification function
-        function showNotification(message, type) {
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.textContent = message;
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.remove();
-            }, 4000);
+            updateCurrentTime();
         }
 
         // Initialize the application when page loads
         document.addEventListener('DOMContentLoaded', init);
-
-        // Close modals when clicking outside
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.style.display = 'none';
-            }
-        }
 
         // Handle keyboard shortcuts
         document.addEventListener('keydown', function(event) {
@@ -1947,11 +1518,14 @@ EMP002,Jane Smith,HR,Manager"></textarea>
                 switch(event.key) {
                     case 'r':
                         event.preventDefault();
-                        if (isLoggedIn) refreshData();
-                        break;
-                    case 'd':
-                        event.preventDefault();
-                        toggleTheme();
+                        if (isLoggedIn) {
+                            showNotification('Data refreshed!', 'success');
+                            if (currentUser.type === 'admin') {
+                                loadAdminDashboard();
+                            } else {
+                                loadEmployeeDashboard();
+                            }
+                        }
                         break;
                 }
             }
