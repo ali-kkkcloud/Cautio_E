@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Management System</title>
+    <title>Advanced Employee Management System</title>
     <style>
         * {
             margin: 0;
@@ -25,9 +25,28 @@
             border-radius: 20px;
             padding: 2rem;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            width: 90%;
-            max-width: 800px;
-            min-height: 500px;
+            width: 95%;
+            max-width: 1200px;
+            min-height: 600px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 400% 400%;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         .header {
@@ -37,16 +56,27 @@
         }
 
         .header h1 {
-            color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+            font-weight: 700;
         }
 
         .auth-section, .main-section {
             display: none;
+            animation: fadeIn 0.5s ease-in;
         }
 
         .auth-section.active, .main-section.active {
             display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .form-group {
@@ -60,18 +90,19 @@
             font-weight: 500;
         }
 
-        input, select {
+        input, select, textarea {
             width: 100%;
             padding: 0.8rem;
             border: 2px solid #e1e1e1;
             border-radius: 8px;
             font-size: 1rem;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
         }
 
-        input:focus, select:focus {
+        input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
         .btn {
@@ -83,8 +114,25 @@
             cursor: pointer;
             font-size: 1rem;
             font-weight: 500;
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: all 0.3s;
             margin: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
         }
 
         .btn:hover {
@@ -100,26 +148,101 @@
             background: linear-gradient(135deg, #00d2d3 0%, #54a0ff 100%);
         }
 
+        .btn-warning {
+            background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #48dbfb 0%, #0abde3 100%);
+        }
+
         .user-info {
-            background: #f8f9fa;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             padding: 1rem;
-            border-radius: 8px;
+            border-radius: 12px;
             margin-bottom: 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
 
         .section {
-            background: #f8f9fa;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             padding: 1.5rem;
-            border-radius: 8px;
+            border-radius: 12px;
             margin-bottom: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #dee2e6;
         }
 
         .section h3 {
             color: #667eea;
             margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section h3::before {
+            content: '●';
+            color: #764ba2;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
         .employee-list {
@@ -129,40 +252,62 @@
         }
 
         .employee-item {
-            background: white;
-            padding: 1rem;
-            border-radius: 8px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .employee-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #667eea, #764ba2);
+        }
+
+        .employee-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
         }
 
         .break-status {
-            padding: 0.3rem 0.8rem;
+            padding: 0.4rem 1rem;
             border-radius: 20px;
             font-size: 0.8rem;
-            font-weight: 500;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .on-break {
-            background: #ffe0e0;
+            background: linear-gradient(135deg, #ffe0e0 0%, #ffcccb 100%);
             color: #d63031;
         }
 
         .working {
-            background: #e0ffe0;
+            background: linear-gradient(135deg, #e0ffe0 0%, #ccffcc 100%);
             color: #00b894;
         }
 
         .logged-out {
-            background: #e0e0e0;
+            background: linear-gradient(135deg, #e0e0e0 0%, #d3d3d3 100%);
             color: #636e72;
         }
 
         .actions {
             display: flex;
             gap: 0.5rem;
+            flex-wrap: wrap;
         }
 
         .btn-small {
@@ -170,49 +315,225 @@
             font-size: 0.8rem;
         }
 
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 1rem;
-            border-radius: 8px;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .stat-label {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
         .alert {
             padding: 1rem;
             border-radius: 8px;
             margin-bottom: 1rem;
+            border: 1px solid;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         .alert-success {
-            background: #d4edda;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
             color: #155724;
-            border: 1px solid #c3e6cb;
+            border-color: #c3e6cb;
         }
 
         .alert-error {
-            background: #f8d7da;
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
             color: #721c24;
-            border: 1px solid #f5c6cb;
+            border-color: #f5c6cb;
         }
+
+        .alert-warning {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            color: #856404;
+            border-color: #ffeaa7;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 0.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            text-align: center;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .grid-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .search-box input {
+            padding-left: 2.5rem;
+        }
+
+        .search-box::before {
+            content: '🔍';
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .floating-stats {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+            min-width: 200px;
+        }
+
+        .connection-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        .connected { background: #00b894; }
+        .disconnected { background: #d63031; }
+        .testing { background: #fdcb6e; }
+
+        .employee-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border: 1px solid #e9ecef;
+        }
+
+        .employee-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .time-tracker {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .time-item {
+            text-align: center;
+            padding: 1rem;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+
+        .time-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.25rem;
+        }
+
+        .time-label {
+            font-size: 0.8rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 3000;
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .notification.success { background: #00b894; }
+        .notification.error { background: #d63031; }
+        .notification.warning { background: #fdcb6e; color: #333; }
 
         @media (max-width: 768px) {
             .container {
@@ -227,40 +548,113 @@
             .employee-item {
                 flex-direction: column;
                 gap: 1rem;
+                text-align: center;
             }
+
+            .grid-form {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .floating-stats {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin-bottom: 1rem;
+            }
+        }
+
+        .dark-mode {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+        }
+
+        .dark-mode .container {
+            background: #34495e;
+            color: #ecf0f1;
+        }
+
+        .dark-mode .section {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
+    <div class="floating-stats" id="floating-stats">
+        <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+            <span class="connection-indicator" id="connection-dot"></span>
+            <strong>System Status</strong>
+        </div>
+        <div style="font-size: 0.8rem;">
+            <div>Connection: <span id="mini-status">Testing...</span></div>
+            <div>Mode: <span id="mini-mode">Unknown</span></div>
+            <div>Time: <span id="current-time">--:--</span></div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="header">
-            <h1>Employee Management System</h1>
-            <p>Manage employees, track attendance, and monitor breaks</p>
+            <h1>🏢 Advanced Employee Management System</h1>
+            <p>Complete workforce management with real-time tracking and analytics</p>
         </div>
 
         <!-- Login Section -->
         <div class="auth-section active" id="auth-section">
-            <div class="section">
-                <h3>Admin Login</h3>
-                <div id="auth-message"></div>
-                <div class="form-group">
-                    <label for="admin-username">Username:</label>
-                    <input type="text" id="admin-username" placeholder="Enter username">
-                </div>
-                <div class="form-group">
-                    <label for="admin-password">Password:</label>
-                    <input type="password" id="admin-password" placeholder="Enter password">
-                </div>
-                <button class="btn" onclick="adminLogin()">Login</button>
+            <div class="tabs">
+                <div class="tab active" onclick="switchAuthTab('admin')">👨‍💼 Admin Login</div>
+                <div class="tab" onclick="switchAuthTab('employee')">👨‍💻 Employee Login</div>
             </div>
 
-            <div class="section">
-                <h3>Employee Login</h3>
-                <div class="form-group">
-                    <label for="employee-id">Employee ID:</label>
-                    <input type="text" id="employee-id" placeholder="Enter your employee ID">
+            <!-- Admin Login -->
+            <div id="admin-login-tab">
+                <div class="section">
+                    <h3>Administrator Access</h3>
+                    <div id="auth-message"></div>
+                    <div class="grid-form">
+                        <div class="form-group">
+                            <label for="admin-username">👤 Username:</label>
+                            <input type="text" id="admin-username" placeholder="Enter admin username">
+                        </div>
+                        <div class="form-group">
+                            <label for="admin-password">🔐 Password:</label>
+                            <input type="password" id="admin-password" placeholder="Enter admin password">
+                        </div>
+                    </div>
+                    <button class="btn" onclick="adminLogin()">
+                        <span id="admin-login-text">🚀 Login as Admin</span>
+                    </button>
                 </div>
-                <button class="btn btn-success" onclick="employeeLogin()">Login</button>
+            </div>
+
+            <!-- Employee Login -->
+            <div id="employee-login-tab" style="display: none;">
+                <div class="section">
+                    <h3>Employee Access</h3>
+                    <div class="form-group">
+                        <label for="employee-id">🆔 Employee ID:</label>
+                        <input type="text" id="employee-id" placeholder="Enter your employee ID (e.g., EMP001)">
+                    </div>
+                    <button class="btn btn-success" onclick="employeeLogin()">
+                        <span id="employee-login-text">✅ Clock In</span>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -270,98 +664,292 @@
                 <div>
                     <strong id="user-name">Welcome</strong>
                     <span id="user-role"></span>
+                    <div style="font-size: 0.8rem; color: #666;">
+                        Last login: <span id="last-login">--:--</span>
+                    </div>
                 </div>
-                <button class="btn btn-danger btn-small" onclick="logout()">Logout</button>
+                <div>
+                    <button class="btn btn-warning btn-small" onclick="toggleTheme()">🌙 Dark Mode</button>
+                    <button class="btn btn-danger btn-small" onclick="logout()">🚪 Logout</button>
+                </div>
             </div>
 
             <!-- Admin Dashboard -->
             <div id="admin-dashboard" style="display: none;">
+                <!-- Real-time Statistics -->
                 <div class="stats">
                     <div class="stat-card">
                         <div class="stat-number" id="total-employees">0</div>
-                        <div class="stat-label">Total Employees</div>
+                        <div class="stat-label">👥 Total Employees</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="total-progress" style="width: 100%;"></div>
+                        </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-number" id="logged-in-count">0</div>
-                        <div class="stat-label">Logged In</div>
+                        <div class="stat-label">🟢 Active Now</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="active-progress" style="width: 0%;"></div>
+                        </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-number" id="on-break-count">0</div>
-                        <div class="stat-label">On Break</div>
+                        <div class="stat-label">☕ On Break</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="break-progress" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="productivity-score">0%</div>
+                        <div class="stat-label">📊 Productivity</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="productivity-progress" style="width: 0%;"></div>
+                        </div>
                     </div>
                 </div>
 
+                <!-- System Status & Setup -->
                 <div class="section">
-                    <h3>System Status</h3>
+                    <h3>⚙️ System Configuration</h3>
                     <div id="system-status">
-                        <p><strong>Google Sheets Connection:</strong> <span id="connection-status">Testing...</span></p>
-                        <p><strong>Sheet ID:</strong> <code>${CONFIG.SHEET_ID}</code></p>
-                        <p><strong>API Key:</strong> <code>${CONFIG.API_KEY.substring(0, 10)}...</code></p>
-                        <button class="btn btn-small" onclick="testConnection()">Test Connection</button>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                            <div>
+                                <strong>📡 Connection Status:</strong><br>
+                                <span id="connection-status">Testing...</span>
+                            </div>
+                            <div>
+                                <strong>📋 Sheet ID:</strong><br>
+                                <code style="font-size: 0.8rem;">${CONFIG.SHEET_ID}</code>
+                            </div>
+                            <div>
+                                <strong>🔗 Apps Script:</strong><br>
+                                <span id="script-status">Not configured</span>
+                            </div>
+                            <div>
+                                <strong>🚀 Current Mode:</strong><br>
+                                <span id="current-mode">Unknown</span>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <button class="btn btn-info btn-small" onclick="testConnection()">🔄 Test Connection</button>
+                            <button class="btn btn-warning btn-small" onclick="refreshData()">♻️ Refresh Data</button>
+                            <button class="btn btn-success btn-small" onclick="exportData()">📥 Export Data</button>
+                            <button class="btn btn-small" onclick="showSetupModal()">⚡ Quick Setup</button>
+                        </div>
+                        
+                        <div id="setup-warning" style="background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%); padding: 1rem; border-radius: 8px; margin-top: 1rem; border: 1px solid #ffeaa7;">
+                            <h4>⚠️ Setup Required for Full Functionality</h4>
+                            <p>To enable employee add/edit features, configure Google Apps Script:</p>
+                            <ol style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                                <li>Visit <a href="https://script.google.com" target="_blank" style="color: #667eea;">script.google.com</a></li>
+                                <li>Create new project and paste the provided code</li>
+                                <li>Deploy as Web App with "Anyone" access</li>
+                                <li>Update APPS_SCRIPT_URL in configuration</li>
+                            </ol>
+                        </div>
                     </div>
                 </div>
 
+                <!-- Advanced Employee Management -->
                 <div class="section">
-                    <h3>Add New Employee</h3>
+                    <h3>➕ Add New Employee</h3>
                     <div id="add-employee-message"></div>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <div class="grid-form">
                         <div class="form-group">
-                            <label for="new-employee-id">Employee ID:</label>
-                            <input type="text" id="new-employee-id" placeholder="EMP001">
+                            <label for="new-employee-id">🆔 Employee ID:</label>
+                            <input type="text" id="new-employee-id" placeholder="EMP001" maxlength="10">
                         </div>
                         <div class="form-group">
-                            <label for="new-employee-name">Full Name:</label>
+                            <label for="new-employee-name">👤 Full Name:</label>
                             <input type="text" id="new-employee-name" placeholder="John Doe">
                         </div>
                         <div class="form-group">
-                            <label for="new-employee-department">Department:</label>
-                            <input type="text" id="new-employee-department" placeholder="IT">
+                            <label for="new-employee-department">🏢 Department:</label>
+                            <select id="new-employee-department">
+                                <option value="">Select Department</option>
+                                <option value="IT">IT & Technology</option>
+                                <option value="HR">Human Resources</option>
+                                <option value="Finance">Finance</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Sales">Sales</option>
+                                <option value="Operations">Operations</option>
+                                <option value="Support">Customer Support</option>
+                                <option value="Other">Other</option>
+                            </select>
                         </div>
                         <div class="form-group">
-                            <label for="new-employee-position">Position:</label>
-                            <input type="text" id="new-employee-position" placeholder="Developer">
+                            <label for="new-employee-position">💼 Position:</label>
+                            <input type="text" id="new-employee-position" placeholder="Software Developer">
+                        </div>
+                        <div class="form-group">
+                            <label for="new-employee-email">📧 Email (Optional):</label>
+                            <input type="email" id="new-employee-email" placeholder="john.doe@company.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="new-employee-phone">📱 Phone (Optional):</label>
+                            <input type="tel" id="new-employee-phone" placeholder="+91 9876543210">
                         </div>
                     </div>
-                    <button class="btn" onclick="addEmployee()">Add Employee</button>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button class="btn" onclick="addEmployee()">
+                            <span id="add-employee-text">✨ Add Employee</span>
+                        </button>
+                        <button class="btn btn-warning" onclick="clearAddForm()">🧹 Clear Form</button>
+                        <button class="btn btn-info" onclick="showBulkAddModal()">📋 Bulk Add</button>
+                    </div>
                 </div>
 
+                <!-- Employee Search & Filter -->
                 <div class="section">
-                    <h3>Employee Management</h3>
+                    <h3>🔍 Employee Directory</h3>
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                        <div class="search-box" style="flex: 1; min-width: 250px;">
+                            <input type="text" id="search-employees" placeholder="Search employees..." onkeyup="filterEmployees()">
+                        </div>
+                        <select id="filter-department" onchange="filterEmployees()" style="min-width: 150px;">
+                            <option value="">All Departments</option>
+                            <option value="IT">IT & Technology</option>
+                            <option value="HR">Human Resources</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Sales">Sales</option>
+                            <option value="Operations">Operations</option>
+                            <option value="Support">Customer Support</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <select id="filter-status" onchange="filterEmployees()" style="min-width: 120px;">
+                            <option value="">All Status</option>
+                            <option value="working">Working</option>
+                            <option value="on-break">On Break</option>
+                            <option value="logged-out">Logged Out</option>
+                        </select>
+                    </div>
+                    
                     <div class="employee-list" id="employee-list">
                         <!-- Employee items will be populated here -->
+                    </div>
+                    
+                    <div id="no-employees" style="text-align: center; padding: 2rem; color: #666; display: none;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">👥</div>
+                        <h3>No Employees Found</h3>
+                        <p>Add some employees to get started!</p>
                     </div>
                 </div>
             </div>
 
             <!-- Employee Dashboard -->
             <div id="employee-dashboard" style="display: none;">
+                <!-- Personal Status Card -->
                 <div class="section">
-                    <h3>Your Status</h3>
-                    <div id="employee-status" class="user-info">
-                        <span>Status: <span id="current-status" class="break-status working">Working</span></span>
-                        <div>
-                            <button class="btn btn-small" id="break-btn" onclick="toggleBreak()">Take Break</button>
+                    <h3>📊 Your Status</h3>
+                    <div class="employee-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <div>
+                                <h3 id="employee-name-display">Employee Name</h3>
+                                <p id="employee-details" style="color: #666; margin: 0;">Department - Position</p>
+                            </div>
+                            <div style="text-align: right;">
+                                <div>Status: <span id="current-status" class="break-status working">Working</span></div>
+                                <div style="font-size: 0.8rem; color: #666; margin-top: 0.25rem;">
+                                    Since: <span id="status-since">--:--</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <button class="btn btn-small" id="break-btn" onclick="toggleBreak()">☕ Take Break</button>
+                            <button class="btn btn-info btn-small" onclick="showActivityModal()">📈 View Activity</button>
+                            <button class="btn btn-warning btn-small" onclick="reportIssue()">⚠️ Report Issue</button>
                         </div>
                     </div>
                 </div>
 
+                <!-- Time Tracking -->
                 <div class="section">
-                    <h3>Today's Activity</h3>
-                    <div class="stats">
-                        <div class="stat-card">
-                            <div class="stat-number" id="login-time">--:--</div>
-                            <div class="stat-label">Login Time</div>
+                    <h3>⏰ Today's Activity</h3>
+                    <div class="time-tracker">
+                        <div class="time-item">
+                            <div class="time-value" id="login-time">--:--</div>
+                            <div class="time-label">Login Time</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-number" id="break-duration">0 min</div>
-                            <div class="stat-label">Total Break Time</div>
+                        <div class="time-item">
+                            <div class="time-value" id="work-hours">0.0</div>
+                            <div class="time-label">Work Hours</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-number" id="work-hours">0 hrs</div>
-                            <div class="stat-label">Work Hours</div>
+                        <div class="time-item">
+                            <div class="time-value" id="break-duration">0</div>
+                            <div class="time-label">Break (Min)</div>
+                        </div>
+                        <div class="time-item">
+                            <div class="time-value" id="productivity-today">85%</div>
+                            <div class="time-label">Productivity</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Progress Bars -->
+                    <div style="margin-top: 1rem;">
+                        <div style="margin-bottom: 0.5rem; display: flex; justify-content: space-between;">
+                            <span>Daily Target (8 hours)</span>
+                            <span id="target-percentage">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="daily-progress" style="width: 0%;"></div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Quick Actions -->
+                <div class="section">
+                    <h3>⚡ Quick Actions</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <button class="btn btn-success" onclick="clockOut()">🏃‍♂️ Clock Out</button>
+                        <button class="btn btn-info" onclick="viewTeamStatus()">👥 Team Status</button>
+                        <button class="btn btn-warning" onclick="requestLeave()">🏖️ Request Leave</button>
+                        <button class="btn" onclick="viewSettings()">⚙️ Settings</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="setup-modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('setup-modal')">&times;</button>
+            <h3>⚡ Quick Setup Guide</h3>
+            <div style="margin: 1rem 0;">
+                <h4>Step 1: Create Apps Script</h4>
+                <p>1. Go to <a href="https://script.google.com" target="_blank">script.google.com</a></p>
+                <p>2. Click "New Project"</p>
+                <p>3. Paste the provided Google Apps Script code</p>
+                
+                <h4>Step 2: Deploy</h4>
+                <p>1. Click "Deploy" → "New Deployment"</p>
+                <p>2. Select "Web app" type</p>
+                <p>3. Set "Execute as: Me" and "Access: Anyone"</p>
+                <p>4. Copy the Web App URL</p>
+                
+                <h4>Step 3: Update Configuration</h4>
+                <p>Replace the APPS_SCRIPT_URL in your code with the copied URL</p>
+            </div>
+            <button class="btn" onclick="closeModal('setup-modal')">Got it! 👍</button>
+        </div>
+    </div>
+
+    <div class="modal" id="bulk-add-modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('bulk-add-modal')">&times;</button>
+            <h3>📋 Bulk Add Employees</h3>
+            <div class="form-group">
+                <label>Enter employee data (CSV format):</label>
+                <textarea id="bulk-data" rows="10" placeholder="ID,Name,Department,Position
+EMP001,John Doe,IT,Developer
+EMP002,Jane Smith,HR,Manager"></textarea>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                <button class="btn" onclick="processBulkAdd()">📥 Import</button>
+                <button class="btn btn-warning" onclick="closeModal('bulk-add-modal')">Cancel</button>
             </div>
         </div>
     </div>
@@ -370,7 +958,9 @@
         // Configuration
         const CONFIG = {
             SHEET_ID: '15pNN3vIuLFug6nlL-GN0uwvkasLokGwPO5kTxmPIZZw',
-            API_KEY: 'AIzaSyDf1wG69f52niXnEZ2PaeBxtuYaf_aRMp8', // Your API key
+            API_KEY: 'AIzaSyDf1wG69f52niXnEZ2PaeBxtuYaf_aRMp8',
+            // Replace this with your Google Apps Script Web App URL
+            APPS_SCRIPT_URL: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec',
             ADMIN_CREDENTIALS: {
                 username: 'admin',
                 password: 'admin123'
@@ -381,269 +971,206 @@
         let currentUser = null;
         let employees = [];
         let isLoggedIn = false;
+        let isDarkMode = false;
+        let refreshInterval = null;
 
-        // Google Sheets API Helper Class
-        class GoogleSheetsAPI {
-            constructor(sheetId, apiKey) {
-                this.sheetId = sheetId;
-                this.apiKey = apiKey;
+        // Google Apps Script API Helper Class
+        class GoogleAppsScriptAPI {
+            constructor(scriptUrl, fallbackSheetId, fallbackApiKey) {
+                this.scriptUrl = scriptUrl;
+                this.fallbackSheetId = fallbackSheetId;
+                this.fallbackApiKey = fallbackApiKey;
                 this.baseUrl = 'https://sheets.googleapis.com/v4/spreadsheets';
-                this.range = 'Sheet1';
+            }
+
+            async makeRequest(action, data = {}) {
+                try {
+                    const requestData = { action, ...data };
+                    
+                    const response = await fetch(this.scriptUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams({
+                            'data': JSON.stringify(requestData)
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Apps Script Error: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    if (result.error) {
+                        throw new Error(result.error);
+                    }
+                    
+                    return result;
+                } catch (error) {
+                    console.error('Apps Script request failed:', error);
+                    throw error;
+                }
             }
 
             async getEmployees() {
                 try {
-                    const url = `${this.baseUrl}/${this.sheetId}/values/${this.range}?key=${this.apiKey}`;
-                    console.log('Fetching from URL:', url);
-                    
-                    const response = await fetch(url);
-                    console.log('Response status:', response.status);
-                    
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        console.error('API Error Response:', errorText);
-                        throw new Error(`API Error: ${response.status} - ${errorText}`);
+                    // Try Apps Script first
+                    if (this.scriptUrl && !this.scriptUrl.includes('YOUR_SCRIPT_ID')) {
+                        console.log('Fetching employees via Apps Script...');
+                        const result = await this.makeRequest('getEmployees');
+                        return result.employees || [];
+                    } else {
+                        // Fallback to direct API for reading only
+                        console.log('Using fallback API for reading...');
+                        return await this.getEmployeesViaAPI();
                     }
-                    
-                    const data = await response.json();
-                    console.log('Sheet data received:', data);
-                    
-                    if (!data.values || data.values.length <= 1) {
-                        console.log('No employee data found in sheet');
-                        return [];
-                    }
-
-                    const employees = [];
-                    for (let i = 1; i < data.values.length; i++) {
-                        const row = data.values[i];
-                        if (row[0]) { // If Employee_ID exists
-                            employees.push({
-                                id: row[0] || '',
-                                name: row[1] || '',
-                                department: row[2] || '',
-                                position: row[3] || '',
-                                status: row[4] || 'logged-out',
-                                loginTime: row[5] || null,
-                                breakTime: parseInt(row[6]) || 0,
-                                lastActivity: row[7] || new Date().toISOString()
-                            });
-                        }
-                    }
-                    console.log('Parsed employees:', employees);
-                    return employees;
                 } catch (error) {
                     console.error('Error fetching employees:', error);
-                    throw error;
+                    // Try fallback API
+                    try {
+                        return await this.getEmployeesViaAPI();
+                    } catch (fallbackError) {
+                        console.error('Fallback also failed:', fallbackError);
+                        return [];
+                    }
                 }
             }
 
-            async addEmployee(employee) {
-                try {
-                    console.log('Adding employee:', employee);
-                    
-                    // Get current data to find next row
-                    const currentData = await this.getSheetData();
-                    const nextRow = currentData.values ? currentData.values.length + 1 : 2;
-                    console.log('Next available row:', nextRow);
-
-                    const values = [
-                        employee.id,
-                        employee.name,
-                        employee.department,
-                        employee.position,
-                        'logged-out',
-                        '',
-                        '0',
-                        new Date().toISOString()
-                    ];
-
-                    const range = `${this.range}!A${nextRow}:H${nextRow}`;
-                    const url = `${this.baseUrl}/${this.sheetId}/values/${range}?valueInputOption=RAW&key=${this.apiKey}`;
-                    
-                    console.log('Adding to range:', range);
-                    console.log('Values to add:', values);
-                    console.log('Request URL:', url);
-                    
-                    const response = await fetch(url, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            values: [values]
-                        })
-                    });
-
-                    console.log('Add employee response status:', response.status);
-
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        console.error('Add employee error response:', errorText);
-                        throw new Error(`API Error: ${response.status} - ${errorText}`);
-                    }
-
-                    const result = await response.json();
-                    console.log('Employee added successfully:', result);
-                    return result;
-                } catch (error) {
-                    console.error('Error adding employee:', error);
-                    throw error;
-                }
-            }
-
-            async updateEmployeeStatus(employeeId, status, loginTime = null, breakTime = 0) {
-                try {
-                    const employees = await this.getEmployees();
-                    const employeeIndex = employees.findIndex(emp => emp.id === employeeId);
-                    
-                    if (employeeIndex === -1) {
-                        throw new Error('Employee not found');
-                    }
-
-                    const rowNumber = employeeIndex + 2;
-                    
-                    // Update status, login time, break time, and last activity
-                    const updates = [
-                        {
-                            range: `${this.range}!E${rowNumber}`,
-                            values: [[status]]
-                        },
-                        {
-                            range: `${this.range}!F${rowNumber}`,
-                            values: [[loginTime || '']]
-                        },
-                        {
-                            range: `${this.range}!G${rowNumber}`,
-                            values: [[breakTime.toString()]]
-                        },
-                        {
-                            range: `${this.range}!H${rowNumber}`,
-                            values: [[new Date().toISOString()]]
-                        }
-                    ];
-
-                    for (const update of updates) {
-                        await this.updateRange(update.range, update.values);
-                    }
-
-                    return true;
-                } catch (error) {
-                    console.error('Error updating employee status:', error);
-                    throw error;
-                }
-            }
-
-            async removeEmployee(employeeId) {
-                try {
-                    const employees = await this.getEmployees();
-                    const employeeIndex = employees.findIndex(emp => emp.id === employeeId);
-                    
-                    if (employeeIndex === -1) {
-                        throw new Error('Employee not found');
-                    }
-
-                    const rowNumber = employeeIndex + 2;
-                    const range = `${this.range}!A${rowNumber}:H${rowNumber}`;
-                    
-                    const url = `${this.baseUrl}/${this.sheetId}/values/${range}:clear?key=${this.apiKey}`;
-                    
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        }
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`API Error: ${response.status}`);
-                    }
-
-                    return await response.json();
-                } catch (error) {
-                    console.error('Error removing employee:', error);
-                    throw error;
-                }
-            }
-
-            async updateRange(range, values) {
-                const url = `${this.baseUrl}/${this.sheetId}/values/${range}?valueInputOption=RAW&key=${this.apiKey}`;
-                
-                const response = await fetch(url, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ values })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`API Error: ${response.status}`);
-                }
-
-                return await response.json();
-            }
-
-            async getSheetData() {
-                const url = `${this.baseUrl}/${this.sheetId}/values/${this.range}?key=${this.apiKey}`;
+            async getEmployeesViaAPI() {
+                const url = `${this.baseUrl}/${this.fallbackSheetId}/values/Sheet1?key=${this.fallbackApiKey}`;
                 const response = await fetch(url);
                 
                 if (!response.ok) {
                     throw new Error(`API Error: ${response.status}`);
                 }
                 
-                return await response.json();
-            }
-        }
-
-        // Initialize Google Sheets API
-        const sheetsAPI = new GoogleSheetsAPI(CONFIG.SHEET_ID, CONFIG.API_KEY);
-
-        // Initialize the application
-        async function init() {
-            updateUI();
-            console.log('Initializing application...');
-            
-            // Test Google Sheets connection
-            try {
-                console.log('Testing Google Sheets connection...');
-                const testData = await sheetsAPI.getSheetData();
-                console.log('Connection successful! Sheet data:', testData);
+                const data = await response.json();
                 
-                if (!testData.values || testData.values.length === 0) {
-                    console.log('Sheet is empty, need to add headers');
-                    // Add headers if sheet is empty
-                    await sheetsAPI.updateRange('Sheet1!A1:H1', [['Employee_ID', 'Name', 'Department', 'Position', 'Status', 'Login_Time', 'Break_Time', 'Last_Activity']]);
-                    console.log('Headers added to sheet');
+                if (!data.values || data.values.length <= 1) {
+                    return [];
                 }
-                
-            } catch (error) {
-                console.error('Google Sheets connection failed:', error);
-                alert('Warning: Unable to connect to Google Sheets. Please check:\n1. API Key is correct\n2. Sheet is publicly accessible\n3. Google Sheets API is enabled');
+
+                const employees = [];
+                for (let i = 1; i < data.values.length; i++) {
+                    const row = data.values[i];
+                    if (row[0]) {
+                        employees.push({
+                            id: row[0] || '',
+                            name: row[1] || '',
+                            department: row[2] || '',
+                            position: row[3] || '',
+                            status: row[4] || 'logged-out',
+                            loginTime: row[5] || null,
+                            breakTime: parseInt(row[6]) || 0,
+                            lastActivity: row[7] || new Date().toISOString(),
+                            email: row[8] || '',
+                            phone: row[9] || ''
+                        });
+                    }
+                }
+                return employees;
             }
-            
-            await loadEmployeeData();
+
+            async addEmployee(employee) {
+                if (this.scriptUrl && !this.scriptUrl.includes('YOUR_SCRIPT_ID')) {
+                    console.log('Adding employee via Apps Script...');
+                    return await this.makeRequest('addEmployee', { employee });
+                } else {
+                    throw new Error('Google Apps Script URL not configured. Writing to sheets requires Apps Script setup.');
+                }
+            }
+
+            async updateEmployeeStatus(employeeId, status, loginTime = null, breakTime = 0) {
+                if (this.scriptUrl && !this.scriptUrl.includes('YOUR_SCRIPT_ID')) {
+                    console.log('Updating employee status via Apps Script...');
+                    const updates = {
+                        status,
+                        loginTime,
+                        breakTime,
+                        lastActivity: new Date().toISOString()
+                    };
+                    return await this.makeRequest('updateEmployee', { employeeId, updates });
+                } else {
+                    console.log('Apps Script not configured, status update skipped');
+                    return { success: true, message: 'Status updated locally only' };
+                }
+            }
+
+            async removeEmployee(employeeId) {
+                if (this.scriptUrl && !this.scriptUrl.includes('YOUR_SCRIPT_ID')) {
+                    console.log('Removing employee via Apps Script...');
+                    return await this.makeRequest('removeEmployee', { employeeId });
+                } else {
+                    throw new Error('Google Apps Script URL not configured. Writing to sheets requires Apps Script setup.');
+                }
+            }
+
+            async testConnection() {
+                try {
+                    if (this.scriptUrl && !this.scriptUrl.includes('YOUR_SCRIPT_ID')) {
+                        await this.makeRequest('getEmployees');
+                        return { success: true, message: 'Apps Script connection successful', type: 'apps-script' };
+                    } else {
+                        // Test fallback API
+                        await this.getEmployeesViaAPI();
+                        return { success: true, message: 'API connection successful (read-only)', type: 'api-readonly' };
+                    }
+                } catch (error) {
+                    return { success: false, message: error.message, type: 'failed' };
+                }
+            }
         }
 
-        // Admin login function
-        function adminLogin() {
+        // Initialize Google Apps Script API
+        const sheetsAPI = new GoogleAppsScriptAPI(CONFIG.APPS_SCRIPT_URL, CONFIG.SHEET_ID, CONFIG.API_KEY);
+
+        // Authentication functions
+        function switchAuthTab(type) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (type === 'admin') {
+                document.getElementById('admin-login-tab').style.display = 'block';
+                document.getElementById('employee-login-tab').style.display = 'none';
+            } else {
+                document.getElementById('admin-login-tab').style.display = 'none';
+                document.getElementById('employee-login-tab').style.display = 'block';
+            }
+        }
+
+        async function adminLogin() {
             const username = document.getElementById('admin-username').value;
             const password = document.getElementById('admin-password').value;
             const messageEl = document.getElementById('auth-message');
+            const buttonText = document.getElementById('admin-login-text');
+            
+            buttonText.innerHTML = '<div class="loading"></div> Logging in...';
 
             if (username === CONFIG.ADMIN_CREDENTIALS.username && 
                 password === CONFIG.ADMIN_CREDENTIALS.password) {
                 currentUser = { type: 'admin', name: 'Administrator' };
                 isLoggedIn = true;
                 showMainSection();
-                showMessage('auth-message', 'Login successful!', 'success');
+                showNotification('Welcome, Administrator!', 'success');
+                buttonText.textContent = '🚀 Login as Admin';
             } else {
-                showMessage('auth-message', 'Invalid credentials!', 'error');
+                showMessage('auth-message', 'Invalid credentials! Please try again.', 'error');
+                buttonText.textContent = '🚀 Login as Admin';
             }
         }
 
-        // Employee login function
         async function employeeLogin() {
-            const employeeId = document.getElementById('employee-id').value;
+            const employeeId = document.getElementById('employee-id').value.trim();
+            const buttonText = document.getElementById('employee-login-text');
+            
+            if (!employeeId) {
+                showMessage('auth-message', 'Please enter your Employee ID!', 'error');
+                return;
+            }
+            
+            buttonText.innerHTML = '<div class="loading"></div> Logging in...';
             
             try {
                 employees = await sheetsAPI.getEmployees();
@@ -663,21 +1190,23 @@
                     await sheetsAPI.updateEmployeeStatus(employeeId, 'working', loginTime, 0);
                     
                     showMainSection();
-                    showMessage('auth-message', 'Login successful!', 'success');
+                    showNotification(`Welcome back, ${employee.name}!`, 'success');
                 } else {
-                    showMessage('auth-message', 'Employee ID not found!', 'error');
+                    showMessage('auth-message', 'Employee ID not found! Please check and try again.', 'error');
                 }
             } catch (error) {
                 console.error('Login error:', error);
-                showMessage('auth-message', 'Error connecting to database. Please try again.', 'error');
+                showMessage('auth-message', 'Connection error. Please try again later.', 'error');
             }
+            
+            buttonText.textContent = '✅ Clock In';
         }
 
-        // Logout function
         async function logout() {
             if (currentUser && currentUser.type === 'employee') {
                 try {
                     await sheetsAPI.updateEmployeeStatus(currentUser.id, 'logged-out', null, currentUser.breakTime || 0);
+                    showNotification('Logged out successfully!', 'success');
                 } catch (error) {
                     console.error('Logout error:', error);
                 }
@@ -685,6 +1214,12 @@
             
             currentUser = null;
             isLoggedIn = false;
+            
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+                refreshInterval = null;
+            }
+            
             document.getElementById('auth-section').classList.add('active');
             document.getElementById('main-section').classList.remove('active');
             
@@ -692,28 +1227,34 @@
             document.getElementById('admin-username').value = '';
             document.getElementById('admin-password').value = '';
             document.getElementById('employee-id').value = '';
+            
+            updateConnectionStatus('disconnected', 'Logged out');
         }
 
-        // Show main section after login
         function showMainSection() {
             document.getElementById('auth-section').classList.remove('active');
             document.getElementById('main-section').classList.add('active');
             
             document.getElementById('user-name').textContent = currentUser.name;
             document.getElementById('user-role').textContent = `(${currentUser.type})`;
+            document.getElementById('last-login').textContent = new Date().toLocaleTimeString();
 
             if (currentUser.type === 'admin') {
                 document.getElementById('admin-dashboard').style.display = 'block';
                 document.getElementById('employee-dashboard').style.display = 'none';
                 loadAdminDashboard();
+                // Start auto-refresh for admin
+                refreshInterval = setInterval(loadAdminDashboard, 30000); // Refresh every 30 seconds
             } else {
                 document.getElementById('admin-dashboard').style.display = 'none';
                 document.getElementById('employee-dashboard').style.display = 'block';
                 loadEmployeeDashboard();
+                // Start auto-refresh for employee
+                refreshInterval = setInterval(updateEmployeeData, 60000); // Refresh every minute
             }
         }
 
-        // Load admin dashboard
+        // Admin Dashboard Functions
         async function loadAdminDashboard() {
             try {
                 console.log('Loading admin dashboard...');
@@ -721,8 +1262,10 @@
                 console.log('Loaded employees for dashboard:', employees);
                 updateStats();
                 renderEmployeeList();
+                updateConnectionStatus('connected', 'Online');
             } catch (error) {
                 console.error('Error loading admin dashboard:', error);
+                updateConnectionStatus('disconnected', 'Error');
                 
                 let errorMessage = 'Error loading employee data. ';
                 if (error.message.includes('403')) {
@@ -734,59 +1277,85 @@
                 }
                 
                 showMessage('add-employee-message', errorMessage, 'error');
-                // Set empty data to avoid crashes
                 employees = [];
                 updateStats();
                 renderEmployeeList();
             }
         }
 
-        // Load employee dashboard
-        async function loadEmployeeDashboard() {
-            try {
-                employees = await sheetsAPI.getEmployees();
-                const employee = employees.find(emp => emp.id === currentUser.id);
-                if (employee) {
-                    updateEmployeeStatus(employee);
-                }
-            } catch (error) {
-                console.error('Error loading employee dashboard:', error);
-            }
-        }
-
-        // Update statistics
         function updateStats() {
             const totalEmployees = employees.length;
             const loggedInCount = employees.filter(emp => emp.status !== 'logged-out').length;
             const onBreakCount = employees.filter(emp => emp.status === 'on-break').length;
+            const workingCount = employees.filter(emp => emp.status === 'working').length;
+            
+            // Calculate productivity score
+            const productivityScore = totalEmployees > 0 ? Math.round((workingCount / totalEmployees) * 100) : 0;
 
             document.getElementById('total-employees').textContent = totalEmployees;
             document.getElementById('logged-in-count').textContent = loggedInCount;
             document.getElementById('on-break-count').textContent = onBreakCount;
+            document.getElementById('productivity-score').textContent = productivityScore + '%';
+
+            // Update progress bars
+            const activePercent = totalEmployees > 0 ? (loggedInCount / totalEmployees) * 100 : 0;
+            const breakPercent = totalEmployees > 0 ? (onBreakCount / totalEmployees) * 100 : 0;
+            
+            document.getElementById('active-progress').style.width = activePercent + '%';
+            document.getElementById('break-progress').style.width = breakPercent + '%';
+            document.getElementById('productivity-progress').style.width = productivityScore + '%';
         }
 
-        // Render employee list
         function renderEmployeeList() {
             const listEl = document.getElementById('employee-list');
+            const noEmployeesEl = document.getElementById('no-employees');
+            
+            if (employees.length === 0) {
+                listEl.style.display = 'none';
+                noEmployeesEl.style.display = 'block';
+                return;
+            }
+            
+            listEl.style.display = 'block';
+            noEmployeesEl.style.display = 'none';
             listEl.innerHTML = '';
 
             employees.forEach(employee => {
                 const employeeEl = document.createElement('div');
                 employeeEl.className = 'employee-item';
+                employeeEl.dataset.employeeId = employee.id;
+                employeeEl.dataset.department = employee.department;
+                employeeEl.dataset.status = employee.status;
                 
                 const statusClass = employee.status === 'working' ? 'working' : 
                                   employee.status === 'on-break' ? 'on-break' : 'logged-out';
                 
+                const lastActivity = employee.lastActivity ? 
+                    new Date(employee.lastActivity).toLocaleString() : 'Never';
+                
                 employeeEl.innerHTML = `
-                    <div>
-                        <strong>${employee.name}</strong> (${employee.id})<br>
-                        <small>${employee.department} - ${employee.position}</small>
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                            <strong style="font-size: 1.1rem;">${employee.name}</strong>
+                            <span style="background: #e9ecef; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.8rem;">${employee.id}</span>
+                        </div>
+                        <div style="color: #666; font-size: 0.9rem;">
+                            🏢 ${employee.department} • 💼 ${employee.position}
+                        </div>
+                        <div style="color: #888; font-size: 0.8rem; margin-top: 0.25rem;">
+                            🕐 Login: ${employee.loginTime || 'Not logged in'} • 
+                            ☕ Break: ${employee.breakTime || 0} min • 
+                            📅 Last seen: ${lastActivity}
+                        </div>
+                        ${employee.email ? `<div style="color: #888; font-size: 0.8rem;">📧 ${employee.email}</div>` : ''}
                     </div>
-                    <div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
                         <span class="break-status ${statusClass}">${employee.status.replace('-', ' ')}</span>
                     </div>
                     <div class="actions">
-                        <button class="btn btn-danger btn-small" onclick="removeEmployee('${employee.id}')">Remove</button>
+                        <button class="btn btn-info btn-small" onclick="viewEmployeeDetails('${employee.id}')">👁️ View</button>
+                        <button class="btn btn-warning btn-small" onclick="editEmployee('${employee.id}')">✏️ Edit</button>
+                        <button class="btn btn-danger btn-small" onclick="removeEmployee('${employee.id}')">🗑️ Remove</button>
                     </div>
                 `;
                 
@@ -794,44 +1363,83 @@
             });
         }
 
-        // Add new employee
+        function filterEmployees() {
+            const searchTerm = document.getElementById('search-employees').value.toLowerCase();
+            const departmentFilter = document.getElementById('filter-department').value;
+            const statusFilter = document.getElementById('filter-status').value;
+            
+            const employeeItems = document.querySelectorAll('.employee-item');
+            
+            employeeItems.forEach(item => {
+                const name = item.querySelector('strong').textContent.toLowerCase();
+                const department = item.dataset.department;
+                const status = item.dataset.status;
+                
+                const matchesSearch = name.includes(searchTerm) || 
+                                    item.dataset.employeeId.toLowerCase().includes(searchTerm);
+                const matchesDepartment = !departmentFilter || department === departmentFilter;
+                const matchesStatus = !statusFilter || status === statusFilter;
+                
+                if (matchesSearch && matchesDepartment && matchesStatus) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
         async function addEmployee() {
             const id = document.getElementById('new-employee-id').value.trim();
             const name = document.getElementById('new-employee-name').value.trim();
-            const department = document.getElementById('new-employee-department').value.trim();
+            const department = document.getElementById('new-employee-department').value;
             const position = document.getElementById('new-employee-position').value.trim();
+            const email = document.getElementById('new-employee-email').value.trim();
+            const phone = document.getElementById('new-employee-phone').value.trim();
+            const buttonText = document.getElementById('add-employee-text');
 
-            console.log('Attempting to add employee:', { id, name, department, position });
+            console.log('Attempting to add employee:', { id, name, department, position, email, phone });
 
             if (!id || !name || !department || !position) {
-                showMessage('add-employee-message', 'Please fill all fields!', 'error');
+                showMessage('add-employee-message', 'Please fill all required fields!', 'error');
                 return;
             }
 
+            // Validate Employee ID format
+            if (!/^[A-Z]{2,5}\d{3,6}$/.test(id)) {
+                showMessage('add-employee-message', 'Employee ID format: 2-5 letters + 3-6 numbers (e.g., EMP001)', 'error');
+                return;
+            }
+
+            // Check if Apps Script is configured
+            if (CONFIG.APPS_SCRIPT_URL.includes('YOUR_SCRIPT_ID')) {
+                showMessage('add-employee-message', 'Google Apps Script not configured. Please follow the setup instructions above.', 'error');
+                return;
+            }
+
+            buttonText.innerHTML = '<div class="loading"></div> Adding...';
+
             try {
-                showMessage('add-employee-message', 'Adding employee...', 'success');
-                
                 // Check if employee already exists
                 const currentEmployees = await sheetsAPI.getEmployees();
                 console.log('Current employees:', currentEmployees);
                 
                 if (currentEmployees.find(emp => emp.id === id)) {
-                    showMessage('add-employee-message', 'Employee ID already exists!', 'error');
+                    showMessage('add-employee-message', 'Employee ID already exists! Please use a different ID.', 'error');
+                    buttonText.textContent = '✨ Add Employee';
                     return;
                 }
 
-                const newEmployee = { id, name, department, position };
+                const newEmployee = { id, name, department, position, email, phone };
                 console.log('New employee object:', newEmployee);
                 
-                await sheetsAPI.addEmployee(newEmployee);
+                const result = await sheetsAPI.addEmployee(newEmployee);
+                console.log('Add employee result:', result);
                 
                 // Clear form
-                document.getElementById('new-employee-id').value = '';
-                document.getElementById('new-employee-name').value = '';
-                document.getElementById('new-employee-department').value = '';
-                document.getElementById('new-employee-position').value = '';
+                clearAddForm();
 
-                showMessage('add-employee-message', 'Employee added successfully! Check your Google Sheet.', 'success');
+                showMessage('add-employee-message', 'Employee added successfully! 🎉', 'success');
+                showNotification(`${name} has been added to the system!`, 'success');
                 
                 // Refresh the employee list
                 setTimeout(async () => {
@@ -842,27 +1450,43 @@
                 console.error('Error adding employee:', error);
                 
                 let errorMessage = 'Error adding employee. ';
-                if (error.message.includes('403')) {
-                    errorMessage += 'Permission denied. Please check Google Sheets sharing settings.';
+                if (error.message.includes('not configured')) {
+                    errorMessage = 'Google Apps Script not configured. Please set up Apps Script first.';
+                } else if (error.message.includes('403')) {
+                    errorMessage += 'Permission denied. Please check Google Apps Script permissions.';
                 } else if (error.message.includes('400')) {
                     errorMessage += 'Bad request. Please check the data format.';
                 } else if (error.message.includes('404')) {
-                    errorMessage += 'Sheet not found. Please check the Sheet ID.';
+                    errorMessage += 'Apps Script not found. Please check the deployment URL.';
                 } else {
                     errorMessage += error.message;
                 }
                 
                 showMessage('add-employee-message', errorMessage, 'error');
             }
+            
+            buttonText.textContent = '✨ Add Employee';
         }
 
-        // Remove employee
+        function clearAddForm() {
+            document.getElementById('new-employee-id').value = '';
+            document.getElementById('new-employee-name').value = '';
+            document.getElementById('new-employee-department').value = '';
+            document.getElementById('new-employee-position').value = '';
+            document.getElementById('new-employee-email').value = '';
+            document.getElementById('new-employee-phone').value = '';
+        }
+
         async function removeEmployee(employeeId) {
-            if (confirm('Are you sure you want to remove this employee?')) {
+            const employee = employees.find(emp => emp.id === employeeId);
+            if (!employee) return;
+
+            if (confirm(`Are you sure you want to remove ${employee.name}? This action cannot be undone.`)) {
                 try {
                     await sheetsAPI.removeEmployee(employeeId);
                     await loadAdminDashboard();
-                    showMessage('add-employee-message', 'Employee removed successfully!', 'success');
+                    showMessage('add-employee-message', `${employee.name} has been removed successfully.`, 'success');
+                    showNotification(`${employee.name} removed from system`, 'warning');
                 } catch (error) {
                     console.error('Error removing employee:', error);
                     showMessage('add-employee-message', 'Error removing employee. Please try again.', 'error');
@@ -870,7 +1494,71 @@
             }
         }
 
-        // Toggle break status
+        // Employee Dashboard Functions
+        async function loadEmployeeDashboard() {
+            try {
+                employees = await sheetsAPI.getEmployees();
+                const employee = employees.find(emp => emp.id === currentUser.id);
+                if (employee) {
+                    // Update current user data
+                    Object.assign(currentUser, employee);
+                    updateEmployeeStatus(employee);
+                    updateEmployeeDisplay(employee);
+                }
+                updateConnectionStatus('connected', 'Online');
+            } catch (error) {
+                console.error('Error loading employee dashboard:', error);
+                updateConnectionStatus('disconnected', 'Error');
+            }
+        }
+
+        function updateEmployeeDisplay(employee) {
+            document.getElementById('employee-name-display').textContent = employee.name;
+            document.getElementById('employee-details').textContent = `${employee.department} - ${employee.position}`;
+        }
+
+        function updateEmployeeStatus(employee) {
+            const statusEl = document.getElementById('current-status');
+            const breakBtn = document.getElementById('break-btn');
+            const statusSince = document.getElementById('status-since');
+            
+            if (employee.status === 'working') {
+                statusEl.textContent = 'Working';
+                statusEl.className = 'break-status working';
+                breakBtn.textContent = '☕ Take Break';
+                statusSince.textContent = employee.loginTime || '--:--';
+            } else if (employee.status === 'on-break') {
+                statusEl.textContent = 'On Break';
+                statusEl.className = 'break-status on-break';
+                breakBtn.textContent = '🔙 End Break';
+                statusSince.textContent = 'Break started';
+            }
+
+            // Update activity stats
+            document.getElementById('login-time').textContent = employee.loginTime || '--:--';
+            document.getElementById('break-duration').textContent = `${employee.breakTime || 0}`;
+            
+            // Calculate work hours
+            if (employee.loginTime) {
+                const loginTime = new Date();
+                const [hours, minutes] = employee.loginTime.split(':');
+                loginTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+                const workHours = ((new Date() - loginTime) / (1000 * 60 * 60) - ((employee.breakTime || 0) / 60));
+                const displayHours = Math.max(0, workHours).toFixed(1);
+                document.getElementById('work-hours').textContent = displayHours;
+                
+                // Update progress bar
+                const targetHours = 8;
+                const percentage = Math.min(100, (workHours / targetHours) * 100);
+                document.getElementById('daily-progress').style.width = percentage + '%';
+                document.getElementById('target-percentage').textContent = Math.round(percentage) + '%';
+                
+                // Calculate productivity
+                const productivity = Math.max(0, Math.min(100, 100 - ((employee.breakTime || 0) / 480) * 100));
+                document.getElementById('productivity-today').textContent = Math.round(productivity) + '%';
+            }
+        }
+
         async function toggleBreak() {
             try {
                 const employee = employees.find(emp => emp.id === currentUser.id);
@@ -881,12 +1569,14 @@
                     if (employee.status === 'working') {
                         newStatus = 'on-break';
                         employee.breakStartTime = new Date();
+                        showNotification('Break started! Enjoy your break ☕', 'warning');
                     } else if (employee.status === 'on-break') {
                         newStatus = 'working';
                         if (employee.breakStartTime) {
                             const breakDuration = (new Date() - employee.breakStartTime) / (1000 * 60);
                             newBreakTime += Math.round(breakDuration);
                         }
+                        showNotification('Welcome back! Break ended 🔙', 'success');
                     }
                     
                     await sheetsAPI.updateEmployeeStatus(currentUser.id, newStatus, employee.loginTime, newBreakTime);
@@ -901,51 +1591,288 @@
                 }
             } catch (error) {
                 console.error('Error toggling break status:', error);
+                showNotification('Error updating status. Please try again.', 'error');
             }
         }
 
-        // Update employee status display
-        function updateEmployeeStatus(employee) {
-            const statusEl = document.getElementById('current-status');
-            const breakBtn = document.getElementById('break-btn');
+        // Utility Functions
+        async function testConnection() {
+            const statusEl = document.getElementById('connection-status');
+            const modeEl = document.getElementById('current-mode');
+            const setupWarning = document.getElementById('setup-warning');
+            const scriptStatus = document.getElementById('script-status');
             
-            if (employee.status === 'working') {
-                statusEl.textContent = 'Working';
-                statusEl.className = 'break-status working';
-                breakBtn.textContent = 'Take Break';
-            } else if (employee.status === 'on-break') {
-                statusEl.textContent = 'On Break';
-                statusEl.className = 'break-status on-break';
-                breakBtn.textContent = 'End Break';
-            }
-
-            // Update activity stats
-            document.getElementById('login-time').textContent = employee.loginTime || '--:--';
-            document.getElementById('break-duration').textContent = `${employee.breakTime} min`;
+            statusEl.textContent = 'Testing...';
+            statusEl.style.color = 'orange';
+            updateConnectionStatus('testing', 'Testing...');
             
-            // Calculate work hours
-            if (employee.loginTime) {
-                const loginTime = new Date();
-                const [hours, minutes] = employee.loginTime.split(':');
-                loginTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-                const workHours = ((new Date() - loginTime) / (1000 * 60 * 60) - (employee.breakTime / 60)).toFixed(1);
-                document.getElementById('work-hours').textContent = `${Math.max(0, workHours)} hrs`;
-            }
-        }
-
-        // Update employee data
-        async function updateEmployeeData() {
-            if (currentUser && currentUser.type === 'employee') {
-                try {
-                    employees = await sheetsAPI.getEmployees();
-                    const employee = employees.find(emp => emp.id === currentUser.id);
-                    if (employee) {
-                        updateEmployeeStatus(employee);
+            try {
+                const result = await sheetsAPI.testConnection();
+                console.log('Connection test result:', result);
+                
+                if (result.success) {
+                    statusEl.textContent = '✓ ' + result.message;
+                    statusEl.style.color = 'green';
+                    
+                    if (result.type === 'apps-script') {
+                        modeEl.textContent = 'Full functionality (Apps Script configured)';
+                        modeEl.style.color = 'green';
+                        scriptStatus.textContent = '✓ Configured';
+                        scriptStatus.style.color = 'green';
+                        setupWarning.style.display = 'none';
+                        updateConnectionStatus('connected', 'Full Access');
+                    } else {
+                        modeEl.textContent = 'Read-only mode (Apps Script not configured)';
+                        modeEl.style.color = 'orange';
+                        scriptStatus.textContent = '⚠️ Not configured';
+                        scriptStatus.style.color = 'orange';
+                        setupWarning.style.display = 'block';
+                        updateConnectionStatus('connected', 'Read-only');
                     }
-                } catch (error) {
-                    console.error('Error updating employee data:', error);
+                    
+                    // Also update employee list
+                    if (currentUser && currentUser.type === 'admin') {
+                        await loadAdminDashboard();
+                    }
+                } else {
+                    statusEl.textContent = '✗ ' + result.message;
+                    statusEl.style.color = 'red';
+                    modeEl.textContent = 'Connection failed';
+                    modeEl.style.color = 'red';
+                    scriptStatus.textContent = '✗ Failed';
+                    scriptStatus.style.color = 'red';
+                    updateConnectionStatus('disconnected', 'Failed');
+                }
+                
+            } catch (error) {
+                console.error('Connection test failed:', error);
+                statusEl.textContent = '✗ Connection failed - ' + error.message;
+                statusEl.style.color = 'red';
+                modeEl.textContent = 'Connection failed';
+                modeEl.style.color = 'red';
+                updateConnectionStatus('disconnected', 'Error');
+            }
+        }
+
+        function updateConnectionStatus(status, message) {
+            const dot = document.getElementById('connection-dot');
+            const miniStatus = document.getElementById('mini-status');
+            const miniMode = document.getElementById('mini-mode');
+            
+            dot.className = `connection-indicator ${status}`;
+            miniStatus.textContent = message;
+            
+            if (status === 'connected') {
+                miniMode.textContent = CONFIG.APPS_SCRIPT_URL.includes('YOUR_SCRIPT_ID') ? 'Read-only' : 'Full Access';
+            } else {
+                miniMode.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+            }
+        }
+
+        async function refreshData() {
+            showNotification('Refreshing data...', 'warning');
+            if (currentUser.type === 'admin') {
+                await loadAdminDashboard();
+            } else {
+                await loadEmployeeDashboard();
+            }
+            showNotification('Data refreshed successfully!', 'success');
+        }
+
+        function exportData() {
+            const csvContent = "data:text/csv;charset=utf-8," + 
+                "Employee_ID,Name,Department,Position,Status,Login_Time,Break_Time,Last_Activity\n" +
+                employees.map(emp => `${emp.id},${emp.name},${emp.department},${emp.position},${emp.status},${emp.loginTime || ''},${emp.breakTime || 0},${emp.lastActivity}`).join('\n');
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `employees_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification('Data exported successfully!', 'success');
+        }
+
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            const btn = event.target;
+            btn.textContent = isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode';
+            
+            // Save preference
+            localStorage.setItem('darkMode', isDarkMode);
+            showNotification(`Switched to ${isDarkMode ? 'dark' : 'light'} mode`, 'success');
+        }
+
+        // Modal Functions
+        function showSetupModal() {
+            document.getElementById('setup-modal').style.display = 'block';
+        }
+
+        function showBulkAddModal() {
+            document.getElementById('bulk-add-modal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function processBulkAdd() {
+            const bulkData = document.getElementById('bulk-data').value;
+            if (!bulkData.trim()) {
+                showNotification('Please enter CSV data!', 'error');
+                return;
+            }
+            
+            const lines = bulkData.trim().split('\n');
+            const employees = [];
+            
+            for (let i = 1; i < lines.length; i++) { // Skip header
+                const [id, name, department, position] = lines[i].split(',');
+                if (id && name && department && position) {
+                    employees.push({ id: id.trim(), name: name.trim(), department: department.trim(), position: position.trim() });
                 }
             }
+            
+            if (employees.length === 0) {
+                showNotification('No valid employee data found!', 'error');
+                return;
+            }
+            
+            showNotification(`Processing ${employees.length} employees...`, 'warning');
+            
+            // Process each employee (simplified for demo)
+            employees.forEach(emp => {
+                console.log('Would add employee:', emp);
+            });
+            
+            closeModal('bulk-add-modal');
+            showNotification(`${employees.length} employees would be added! (Feature in development)`, 'success');
+        }
+
+        // Employee functions
+        function viewEmployeeDetails(employeeId) {
+            const employee = employees.find(emp => emp.id === employeeId);
+            if (!employee) return;
+            
+            alert(`Employee Details:\n\nID: ${employee.id}\nName: ${employee.name}\nDepartment: ${employee.department}\nPosition: ${employee.position}\nStatus: ${employee.status}\nLogin Time: ${employee.loginTime || 'Not logged in'}\nBreak Time: ${employee.breakTime || 0} minutes\nLast Activity: ${new Date(employee.lastActivity).toLocaleString()}`);
+        }
+
+        function editEmployee(employeeId) {
+            showNotification('Edit employee feature coming soon!', 'warning');
+        }
+
+        function clockOut() {
+            if (confirm('Are you sure you want to clock out for the day?')) {
+                logout();
+            }
+        }
+
+        function viewTeamStatus() {
+            showNotification('Team status feature coming soon!', 'warning');
+        }
+
+        function requestLeave() {
+            showNotification('Leave request feature coming soon!', 'warning');
+        }
+
+        function viewSettings() {
+            showNotification('Settings feature coming soon!', 'warning');
+        }
+
+        function showActivityModal() {
+            showNotification('Activity details feature coming soon!', 'warning');
+        }
+
+        function reportIssue() {
+            showNotification('Issue reporting feature coming soon!', 'warning');
+        }
+
+        // Initialize the application
+        async function init() {
+            updateUI();
+            console.log('Initializing application...');
+            
+            // Load theme preference
+            const savedTheme = localStorage.getItem('darkMode') === 'true';
+            if (savedTheme) {
+                toggleTheme();
+            }
+            
+            // Test connection and determine capabilities
+            try {
+                console.log('Testing connection and capabilities...');
+                const result = await sheetsAPI.testConnection();
+                console.log('Connection test result:', result);
+                
+                // Update connection status if element exists
+                const statusEl = document.getElementById('connection-status');
+                const modeEl = document.getElementById('current-mode');
+                const setupWarning = document.getElementById('setup-warning');
+                const scriptStatus = document.getElementById('script-status');
+                
+                if (statusEl && result.success) {
+                    statusEl.textContent = '✓ ' + result.message;
+                    statusEl.style.color = 'green';
+                    
+                    if (modeEl) {
+                        if (result.type === 'apps-script') {
+                            modeEl.textContent = 'Full functionality (Apps Script configured)';
+                            modeEl.style.color = 'green';
+                            if (scriptStatus) {
+                                scriptStatus.textContent = '✓ Configured';
+                                scriptStatus.style.color = 'green';
+                            }
+                            if (setupWarning) setupWarning.style.display = 'none';
+                            updateConnectionStatus('connected', 'Full Access');
+                        } else {
+                            modeEl.textContent = 'Read-only mode (Apps Script not configured)';
+                            modeEl.style.color = 'orange';
+                            if (scriptStatus) {
+                                scriptStatus.textContent = '⚠️ Not configured';
+                                scriptStatus.style.color = 'orange';
+                            }
+                            if (setupWarning) setupWarning.style.display = 'block';
+                            updateConnectionStatus('connected', 'Read-only');
+                        }
+                    }
+                } else if (statusEl) {
+                    statusEl.textContent = '✗ ' + (result.message || 'Connection failed');
+                    statusEl.style.color = 'red';
+                    if (modeEl) {
+                        modeEl.textContent = 'Connection failed';
+                        modeEl.style.color = 'red';
+                    }
+                    updateConnectionStatus('disconnected', 'Failed');
+                }
+                
+            } catch (error) {
+                console.error('Connection test failed during init:', error);
+                
+                // Update connection status if element exists
+                const statusEl = document.getElementById('connection-status');
+                if (statusEl) {
+                    statusEl.textContent = '✗ Connection failed - ' + error.message;
+                    statusEl.style.color = 'red';
+                }
+                updateConnectionStatus('disconnected', 'Error');
+            }
+            
+            await loadEmployeeData();
+            
+            // Start time updater
+            setInterval(updateCurrentTime, 1000);
+        }
+
+        function updateCurrentTime() {
+            const now = new Date();
+            document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit'
+            });
         }
 
         // Load employee data from Google Sheets
@@ -959,26 +1886,24 @@
             }
         }
 
-        // Test Google Sheets connection
-        async function testConnection() {
-            const statusEl = document.getElementById('connection-status');
-            statusEl.textContent = 'Testing...';
-            statusEl.style.color = 'orange';
-            
-            try {
-                const testData = await sheetsAPI.getSheetData();
-                console.log('Connection test successful:', testData);
-                statusEl.textContent = '✓ Connected';
-                statusEl.style.color = 'green';
-                
-                // Also update employee list
-                await loadAdminDashboard();
-                
-            } catch (error) {
-                console.error('Connection test failed:', error);
-                statusEl.textContent = '✗ Failed - ' + error.message;
-                statusEl.style.color = 'red';
+        // Update employee data
+        async function updateEmployeeData() {
+            if (currentUser && currentUser.type === 'employee') {
+                try {
+                    employees = await sheetsAPI.getEmployees();
+                    const employee = employees.find(emp => emp.id === currentUser.id);
+                    if (employee) {
+                        Object.assign(currentUser, employee);
+                        updateEmployeeStatus(employee);
+                    }
+                } catch (error) {
+                    console.error('Error updating employee data:', error);
+                }
             }
+        }
+
+        function updateUI() {
+            // Any UI updates needed on init
         }
 
         // Show message function
@@ -987,18 +1912,46 @@
             messageEl.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
             setTimeout(() => {
                 messageEl.innerHTML = '';
-            }, 3000);
+            }, 5000);
+        }
+
+        // Show notification function
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 4000);
         }
 
         // Initialize the application when page loads
         document.addEventListener('DOMContentLoaded', init);
 
-        // Update employee dashboard every minute
-        setInterval(() => {
-            if (currentUser && currentUser.type === 'employee') {
-                updateEmployeeData();
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
             }
-        }, 60000);
+        }
+
+        // Handle keyboard shortcuts
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey || event.metaKey) {
+                switch(event.key) {
+                    case 'r':
+                        event.preventDefault();
+                        if (isLoggedIn) refreshData();
+                        break;
+                    case 'd':
+                        event.preventDefault();
+                        toggleTheme();
+                        break;
+                }
+            }
+        });
     </script>
 </body>
 </html>
