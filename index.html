@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 800px;
+            min-height: 500px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        .header h1 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-section, .main-section {
+            display: none;
+        }
+
+        .auth-section.active, .main-section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin: 0.5rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #00d2d3 0%, #54a0ff 100%);
+        }
+
+        .user-info {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .section h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .employee-list {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .employee-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .break-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .on-break {
+            background: #ffe0e0;
+            color: #d63031;
+        }
+
+        .working {
+            background: #e0ffe0;
+            color: #00b894;
+        }
+
+        .logged-out {
+            background: #e0e0e0;
+            color: #636e72;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 1rem;
+                padding: 1rem;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            .employee-item {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Employee Management System</h1>
+            <p>Manage employees, track attendance, and monitor breaks</p>
+        </div>
+
+        <!-- Login Section -->
+        <div class="auth-section active" id="auth-section">
+            <div class="section">
+                <h3>Admin Login</h3>
+                <div id="auth-message"></div>
+                <div class="form-group">
+                    <label for="admin-username">Username:</label>
+                    <input type="text" id="admin-username" placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <label for="admin-password">Password:</label>
+                    <input type="password" id="admin-password" placeholder="Enter password">
+                </div>
+                <button class="btn" onclick="adminLogin()">Login</button>
+            </div>
+
+            <div class="section">
+                <h3>Employee Login</h3>
+                <div class="form-group">
+                    <label for="employee-id">Employee ID:</label>
+                    <input type="text" id="employee-id" placeholder="Enter your employee ID">
+                </div>
+                <button class="btn btn-success" onclick="employeeLogin()">Login</button>
+            </div>
+        </div>
+
+        <!-- Main Dashboard -->
+        <div class="main-section" id="main-section">
+            <div class="user-info">
+                <div>
+                    <strong id="user-name">Welcome</strong>
+                    <span id="user-role"></span>
+                </div>
+                <button class="btn btn-danger btn-small" onclick="logout()">Logout</button>
+            </div>
+
+            <!-- Admin Dashboard -->
+            <div id="admin-dashboard" style="display: none;">
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-employees">0</div>
+                        <div class="stat-label">Total Employees</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="logged-in-count">0</div>
+                        <div class="stat-label">Logged In</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="on-break-count">0</div>
+                        <div class="stat-label">On Break</div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Add New Employee</h3>
+                    <div id="add-employee-message"></div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <div class="form-group">
+                            <label for="new-employee-id">Employee ID:</label>
+                            <input type="text" id="new-employee-id" placeholder="EMP001">
+                        </div>
+                        <div class="form-group">
+                            <label for="new-employee-name">Full Name:</label>
+                            <input type="text" id="new-employee-name" placeholder="John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label for="new-employee-department">Department:</label>
+                            <input type="text" id="new-employee-department" placeholder="IT">
+                        </div>
+                        <div class="form-group">
+                            <label for="new-employee-position">Position:</label>
+                            <input type="text" id="new-employee-position" placeholder="Developer">
+                        </div>
+                    </div>
+                    <button class="btn" onclick="addEmployee()">Add Employee</button>
+                </div>
+
+                <div class="section">
+                    <h3>Employee Management</h3>
+                    <div class="employee-list" id="employee-list">
+                        <!-- Employee items will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employee Dashboard -->
+            <div id="employee-dashboard" style="display: none;">
+                <div class="section">
+                    <h3>Your Status</h3>
+                    <div id="employee-status" class="user-info">
+                        <span>Status: <span id="current-status" class="break-status working">Working</span></span>
+                        <div>
+                            <button class="btn btn-small" id="break-btn" onclick="toggleBreak()">Take Break</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>Today's Activity</h3>
+                    <div class="stats">
+                        <div class="stat-card">
+                            <div class="stat-number" id="login-time">--:--</div>
+                            <div class="stat-label">Login Time</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="break-duration">0 min</div>
+                            <div class="stat-label">Total Break Time</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="work-hours">0 hrs</div>
+                            <div class="stat-label">Work Hours</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const CONFIG = {
+            SHEET_ID: '15pNN3vIuLFug6nlL-GN0uwvkasLokGwPO5kTxmPIZZw',
+            API_KEY: 'YOUR_GOOGLE_SHEETS_API_KEY', // Replace with your API key
+            ADMIN_CREDENTIALS: {
+                username: 'admin',
+                password: 'admin123'
+            }
+        };
+
+        // Application state
+        let currentUser = null;
+        let employees = [];
+        let isLoggedIn = false;
+
+        // Mock data for demonstration (replace with actual Google Sheets integration)
+        let mockEmployees = [
+            {
+                id: 'EMP001',
+                name: 'John Doe',
+                department: 'IT',
+                position: 'Developer',
+                status: 'working',
+                loginTime: '09:00',
+                breakTime: 0,
+                lastActivity: new Date().toISOString()
+            },
+            {
+                id: 'EMP002',
+                name: 'Jane Smith',
+                department: 'HR',
+                position: 'Manager',
+                status: 'logged-out',
+                loginTime: null,
+                breakTime: 0,
+                lastActivity: new Date().toISOString()
+            }
+        ];
+
+        // Initialize the application
+        function init() {
+            updateUI();
+            loadEmployeeData();
+        }
+
+        // Admin login function
+        function adminLogin() {
+            const username = document.getElementById('admin-username').value;
+            const password = document.getElementById('admin-password').value;
+            const messageEl = document.getElementById('auth-message');
+
+            if (username === CONFIG.ADMIN_CREDENTIALS.username && 
+                password === CONFIG.ADMIN_CREDENTIALS.password) {
+                currentUser = { type: 'admin', name: 'Administrator' };
+                isLoggedIn = true;
+                showMainSection();
+                showMessage('auth-message', 'Login successful!', 'success');
+            } else {
+                showMessage('auth-message', 'Invalid credentials!', 'error');
+            }
+        }
+
+        // Employee login function
+        function employeeLogin() {
+            const employeeId = document.getElementById('employee-id').value;
+            const employee = mockEmployees.find(emp => emp.id === employeeId);
+
+            if (employee) {
+                currentUser = { type: 'employee', ...employee };
+                isLoggedIn = true;
+                
+                // Update employee status to logged in
+                employee.status = 'working';
+                employee.loginTime = new Date().toLocaleTimeString('en-US', {
+                    hour12: false,
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                showMainSection();
+                updateEmployeeData();
+            } else {
+                showMessage('auth-message', 'Employee ID not found!', 'error');
+            }
+        }
+
+        // Logout function
+        function logout() {
+            if (currentUser && currentUser.type === 'employee') {
+                const employee = mockEmployees.find(emp => emp.id === currentUser.id);
+                if (employee) {
+                    employee.status = 'logged-out';
+                    employee.loginTime = null;
+                }
+            }
+            
+            currentUser = null;
+            isLoggedIn = false;
+            document.getElementById('auth-section').classList.add('active');
+            document.getElementById('main-section').classList.remove('active');
+            
+            // Clear input fields
+            document.getElementById('admin-username').value = '';
+            document.getElementById('admin-password').value = '';
+            document.getElementById('employee-id').value = '';
+        }
+
+        // Show main section after login
+        function showMainSection() {
+            document.getElementById('auth-section').classList.remove('active');
+            document.getElementById('main-section').classList.add('active');
+            
+            document.getElementById('user-name').textContent = currentUser.name;
+            document.getElementById('user-role').textContent = `(${currentUser.type})`;
+
+            if (currentUser.type === 'admin') {
+                document.getElementById('admin-dashboard').style.display = 'block';
+                document.getElementById('employee-dashboard').style.display = 'none';
+                loadAdminDashboard();
+            } else {
+                document.getElementById('admin-dashboard').style.display = 'none';
+                document.getElementById('employee-dashboard').style.display = 'block';
+                loadEmployeeDashboard();
+            }
+        }
+
+        // Load admin dashboard
+        function loadAdminDashboard() {
+            updateStats();
+            renderEmployeeList();
+        }
+
+        // Load employee dashboard
+        function loadEmployeeDashboard() {
+            const employee = mockEmployees.find(emp => emp.id === currentUser.id);
+            if (employee) {
+                updateEmployeeStatus(employee);
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            const totalEmployees = mockEmployees.length;
+            const loggedInCount = mockEmployees.filter(emp => emp.status !== 'logged-out').length;
+            const onBreakCount = mockEmployees.filter(emp => emp.status === 'on-break').length;
+
+            document.getElementById('total-employees').textContent = totalEmployees;
+            document.getElementById('logged-in-count').textContent = loggedInCount;
+            document.getElementById('on-break-count').textContent = onBreakCount;
+        }
+
+        // Render employee list
+        function renderEmployeeList() {
+            const listEl = document.getElementById('employee-list');
+            listEl.innerHTML = '';
+
+            mockEmployees.forEach(employee => {
+                const employeeEl = document.createElement('div');
+                employeeEl.className = 'employee-item';
+                
+                const statusClass = employee.status === 'working' ? 'working' : 
+                                  employee.status === 'on-break' ? 'on-break' : 'logged-out';
+                
+                employeeEl.innerHTML = `
+                    <div>
+                        <strong>${employee.name}</strong> (${employee.id})<br>
+                        <small>${employee.department} - ${employee.position}</small>
+                    </div>
+                    <div>
+                        <span class="break-status ${statusClass}">${employee.status.replace('-', ' ')}</span>
+                    </div>
+                    <div class="actions">
+                        <button class="btn btn-danger btn-small" onclick="removeEmployee('${employee.id}')">Remove</button>
+                    </div>
+                `;
+                
+                listEl.appendChild(employeeEl);
+            });
+        }
+
+        // Add new employee
+        function addEmployee() {
+            const id = document.getElementById('new-employee-id').value;
+            const name = document.getElementById('new-employee-name').value;
+            const department = document.getElementById('new-employee-department').value;
+            const position = document.getElementById('new-employee-position').value;
+
+            if (!id || !name || !department || !position) {
+                showMessage('add-employee-message', 'Please fill all fields!', 'error');
+                return;
+            }
+
+            if (mockEmployees.find(emp => emp.id === id)) {
+                showMessage('add-employee-message', 'Employee ID already exists!', 'error');
+                return;
+            }
+
+            const newEmployee = {
+                id,
+                name,
+                department,
+                position,
+                status: 'logged-out',
+                loginTime: null,
+                breakTime: 0,
+                lastActivity: new Date().toISOString()
+            };
+
+            mockEmployees.push(newEmployee);
+            
+            // Clear form
+            document.getElementById('new-employee-id').value = '';
+            document.getElementById('new-employee-name').value = '';
+            document.getElementById('new-employee-department').value = '';
+            document.getElementById('new-employee-position').value = '';
+
+            showMessage('add-employee-message', 'Employee added successfully!', 'success');
+            updateStats();
+            renderEmployeeList();
+        }
+
+        // Remove employee
+        function removeEmployee(employeeId) {
+            if (confirm('Are you sure you want to remove this employee?')) {
+                mockEmployees = mockEmployees.filter(emp => emp.id !== employeeId);
+                updateStats();
+                renderEmployeeList();
+            }
+        }
+
+        // Toggle break status
+        function toggleBreak() {
+            const employee = mockEmployees.find(emp => emp.id === currentUser.id);
+            if (employee) {
+                if (employee.status === 'working') {
+                    employee.status = 'on-break';
+                    employee.breakStartTime = new Date();
+                } else if (employee.status === 'on-break') {
+                    employee.status = 'working';
+                    if (employee.breakStartTime) {
+                        const breakDuration = (new Date() - employee.breakStartTime) / (1000 * 60);
+                        employee.breakTime += Math.round(breakDuration);
+                    }
+                }
+                updateEmployeeStatus(employee);
+            }
+        }
+
+        // Update employee status display
+        function updateEmployeeStatus(employee) {
+            const statusEl = document.getElementById('current-status');
+            const breakBtn = document.getElementById('break-btn');
+            
+            if (employee.status === 'working') {
+                statusEl.textContent = 'Working';
+                statusEl.className = 'break-status working';
+                breakBtn.textContent = 'Take Break';
+            } else if (employee.status === 'on-break') {
+                statusEl.textContent = 'On Break';
+                statusEl.className = 'break-status on-break';
+                breakBtn.textContent = 'End Break';
+            }
+
+            // Update activity stats
+            document.getElementById('login-time').textContent = employee.loginTime || '--:--';
+            document.getElementById('break-duration').textContent = `${employee.breakTime} min`;
+            
+            // Calculate work hours
+            if (employee.loginTime) {
+                const loginTime = new Date();
+                const [hours, minutes] = employee.loginTime.split(':');
+                loginTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+                const workHours = ((new Date() - loginTime) / (1000 * 60 * 60) - (employee.breakTime / 60)).toFixed(1);
+                document.getElementById('work-hours').textContent = `${Math.max(0, workHours)} hrs`;
+            }
+        }
+
+        // Update employee data
+        function updateEmployeeData() {
+            if (currentUser && currentUser.type === 'employee') {
+                const employee = mockEmployees.find(emp => emp.id === currentUser.id);
+                if (employee) {
+                    updateEmployeeStatus(employee);
+                }
+            }
+        }
+
+        // Load employee data (mock function - replace with Google Sheets API)
+        function loadEmployeeData() {
+            // This function would normally fetch data from Google Sheets
+            // For now, we're using mock data
+            console.log('Loading employee data...');
+        }
+
+        // Show message function
+        function showMessage(elementId, message, type) {
+            const messageEl = document.getElementById(elementId);
+            messageEl.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => {
+                messageEl.innerHTML = '';
+            }, 3000);
+        }
+
+        // Initialize the application when page loads
+        document.addEventListener('DOMContentLoaded', init);
+
+        // Update employee dashboard every minute
+        setInterval(() => {
+            if (currentUser && currentUser.type === 'employee') {
+                updateEmployeeData();
+            }
+        }, 60000);
+    </script>
+</body>
+</html>
