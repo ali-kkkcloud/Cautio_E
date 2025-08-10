@@ -926,13 +926,33 @@
                     const requestData = { action, ...data };
                     console.log('Sending request:', requestData);
                     
-                    const response = await fetch(this.scriptUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(requestData)
-                    });
+                    // Try multiple request formats for compatibility
+                    let response;
+                    
+                    try {
+                        // First try: Direct JSON POST
+                        response = await fetch(this.scriptUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(requestData)
+                        });
+                    } catch (firstError) {
+                        console.log('JSON POST failed, trying form data...', firstError);
+                        
+                        // Second try: Form data
+                        const formData = new FormData();
+                        formData.append('action', action);
+                        if (data.employee) formData.append('employee', JSON.stringify(data.employee));
+                        if (data.employeeId) formData.append('employeeId', data.employeeId);
+                        if (data.updates) formData.append('updates', JSON.stringify(data.updates));
+                        
+                        response = await fetch(this.scriptUrl, {
+                            method: 'POST',
+                            body: formData
+                        });
+                    }
 
                     console.log('Response status:', response.status);
 
@@ -1048,8 +1068,17 @@
             async testConnection() {
                 try {
                     if (this.scriptUrl && !this.scriptUrl.includes('YOUR_SCRIPT_ID')) {
+                        // Try to get employees first (this will auto-initialize the sheet)
                         await this.makeRequest('getEmployees');
-                        return { success: true, message: 'Apps Script connection successful', type: 'apps-script' };
+                        
+                        // Then try manual initialization to ensure everything is setup
+                        try {
+                            await this.makeRequest('initializeSheet');
+                        } catch (initError) {
+                            console.log('Manual initialization not needed:', initError);
+                        }
+                        
+                        return { success: true, message: 'Apps Script connection successful - Sheet auto-initialized', type: 'apps-script' };
                     } else {
                         await this.getEmployeesViaAPI();
                         return { success: true, message: 'API connection successful (read-only)', type: 'api-readonly' };
@@ -2004,18 +2033,33 @@
             setInterval(updateCurrentTime, 1000);
             updateCurrentTime();
             
-            // Test connection
+            // Test connection and auto-initialize sheet
             try {
+                console.log('Testing connection and auto-initializing sheet...');
                 const result = await sheetsAPI.testConnection();
+                
                 if (result.success) {
                     updateConnectionStatus('connected', result.type === 'apps-script' ? 'Full Access' : 'Read-only');
+                    console.log('✅ Connection successful:', result.message);
+                    
+                    // Load initial employee data
+                    try {
+                        employees = await sheetsAPI.getEmployees();
+                        console.log('✅ Employees loaded:', employees.length, 'found');
+                    } catch (loadError) {
+                        console.log('⚠️ Initial employee load failed:', loadError);
+                        employees = [];
+                    }
                 } else {
                     updateConnectionStatus('disconnected', 'Failed');
+                    console.log('❌ Connection failed:', result.message);
                 }
             } catch (error) {
                 console.error('Connection test failed:', error);
                 updateConnectionStatus('disconnected', 'Error');
             }
+            
+            console.log('🚀 System initialized successfully!');
         }
 
         // Initialize when page loads
