@@ -372,34 +372,205 @@
         let employees = [];
         let isLoggedIn = false;
 
-        // Mock data for demonstration (replace with actual Google Sheets integration)
-        let mockEmployees = [
-            {
-                id: 'EMP001',
-                name: 'John Doe',
-                department: 'IT',
-                position: 'Developer',
-                status: 'working',
-                loginTime: '09:00',
-                breakTime: 0,
-                lastActivity: new Date().toISOString()
-            },
-            {
-                id: 'EMP002',
-                name: 'Jane Smith',
-                department: 'HR',
-                position: 'Manager',
-                status: 'logged-out',
-                loginTime: null,
-                breakTime: 0,
-                lastActivity: new Date().toISOString()
+        // Google Sheets API Helper Class
+        class GoogleSheetsAPI {
+            constructor(sheetId, apiKey) {
+                this.sheetId = sheetId;
+                this.apiKey = apiKey;
+                this.baseUrl = 'https://sheets.googleapis.com/v4/spreadsheets';
+                this.range = 'Sheet1';
             }
-        ];
+
+            async getEmployees() {
+                try {
+                    const url = `${this.baseUrl}/${this.sheetId}/values/${this.range}?key=${this.apiKey}`;
+                    const response = await fetch(url);
+                    
+                    if (!response.ok) {
+                        throw new Error(`API Error: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (!data.values || data.values.length <= 1) {
+                        return [];
+                    }
+
+                    const employees = [];
+                    for (let i = 1; i < data.values.length; i++) {
+                        const row = data.values[i];
+                        if (row[0]) { // If Employee_ID exists
+                            employees.push({
+                                id: row[0] || '',
+                                name: row[1] || '',
+                                department: row[2] || '',
+                                position: row[3] || '',
+                                status: row[4] || 'logged-out',
+                                loginTime: row[5] || null,
+                                breakTime: parseInt(row[6]) || 0,
+                                lastActivity: row[7] || new Date().toISOString()
+                            });
+                        }
+                    }
+                    return employees;
+                } catch (error) {
+                    console.error('Error fetching employees:', error);
+                    return [];
+                }
+            }
+
+            async addEmployee(employee) {
+                try {
+                    // Get current data to find next row
+                    const currentData = await this.getSheetData();
+                    const nextRow = currentData.values ? currentData.values.length + 1 : 2;
+
+                    const values = [
+                        employee.id,
+                        employee.name,
+                        employee.department,
+                        employee.position,
+                        'logged-out',
+                        '',
+                        '0',
+                        new Date().toISOString()
+                    ];
+
+                    const range = `${this.range}!A${nextRow}:H${nextRow}`;
+                    const url = `${this.baseUrl}/${this.sheetId}/values/${range}?valueInputOption=RAW&key=${this.apiKey}`;
+                    
+                    const response = await fetch(url, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            values: [values]
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API Error: ${response.status}`);
+                    }
+
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error adding employee:', error);
+                    throw error;
+                }
+            }
+
+            async updateEmployeeStatus(employeeId, status, loginTime = null, breakTime = 0) {
+                try {
+                    const employees = await this.getEmployees();
+                    const employeeIndex = employees.findIndex(emp => emp.id === employeeId);
+                    
+                    if (employeeIndex === -1) {
+                        throw new Error('Employee not found');
+                    }
+
+                    const rowNumber = employeeIndex + 2;
+                    
+                    // Update status, login time, break time, and last activity
+                    const updates = [
+                        {
+                            range: `${this.range}!E${rowNumber}`,
+                            values: [[status]]
+                        },
+                        {
+                            range: `${this.range}!F${rowNumber}`,
+                            values: [[loginTime || '']]
+                        },
+                        {
+                            range: `${this.range}!G${rowNumber}`,
+                            values: [[breakTime.toString()]]
+                        },
+                        {
+                            range: `${this.range}!H${rowNumber}`,
+                            values: [[new Date().toISOString()]]
+                        }
+                    ];
+
+                    for (const update of updates) {
+                        await this.updateRange(update.range, update.values);
+                    }
+
+                    return true;
+                } catch (error) {
+                    console.error('Error updating employee status:', error);
+                    throw error;
+                }
+            }
+
+            async removeEmployee(employeeId) {
+                try {
+                    const employees = await this.getEmployees();
+                    const employeeIndex = employees.findIndex(emp => emp.id === employeeId);
+                    
+                    if (employeeIndex === -1) {
+                        throw new Error('Employee not found');
+                    }
+
+                    const rowNumber = employeeIndex + 2;
+                    const range = `${this.range}!A${rowNumber}:H${rowNumber}`;
+                    
+                    const url = `${this.baseUrl}/${this.sheetId}/values/${range}:clear?key=${this.apiKey}`;
+                    
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API Error: ${response.status}`);
+                    }
+
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error removing employee:', error);
+                    throw error;
+                }
+            }
+
+            async updateRange(range, values) {
+                const url = `${this.baseUrl}/${this.sheetId}/values/${range}?valueInputOption=RAW&key=${this.apiKey}`;
+                
+                const response = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ values })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status}`);
+                }
+
+                return await response.json();
+            }
+
+            async getSheetData() {
+                const url = `${this.baseUrl}/${this.sheetId}/values/${this.range}?key=${this.apiKey}`;
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status}`);
+                }
+                
+                return await response.json();
+            }
+        }
+
+        // Initialize Google Sheets API
+        const sheetsAPI = new GoogleSheetsAPI(CONFIG.SHEET_ID, CONFIG.API_KEY);
 
         // Initialize the application
-        function init() {
+        async function init() {
             updateUI();
-            loadEmployeeData();
+            await loadEmployeeData();
         }
 
         // Admin login function
@@ -420,36 +591,44 @@
         }
 
         // Employee login function
-        function employeeLogin() {
+        async function employeeLogin() {
             const employeeId = document.getElementById('employee-id').value;
-            const employee = mockEmployees.find(emp => emp.id === employeeId);
+            
+            try {
+                employees = await sheetsAPI.getEmployees();
+                const employee = employees.find(emp => emp.id === employeeId);
 
-            if (employee) {
-                currentUser = { type: 'employee', ...employee };
-                isLoggedIn = true;
-                
-                // Update employee status to logged in
-                employee.status = 'working';
-                employee.loginTime = new Date().toLocaleTimeString('en-US', {
-                    hour12: false,
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-                
-                showMainSection();
-                updateEmployeeData();
-            } else {
-                showMessage('auth-message', 'Employee ID not found!', 'error');
+                if (employee) {
+                    currentUser = { type: 'employee', ...employee };
+                    isLoggedIn = true;
+                    
+                    // Update employee status to logged in
+                    const loginTime = new Date().toLocaleTimeString('en-US', {
+                        hour12: false,
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    await sheetsAPI.updateEmployeeStatus(employeeId, 'working', loginTime, 0);
+                    
+                    showMainSection();
+                    showMessage('auth-message', 'Login successful!', 'success');
+                } else {
+                    showMessage('auth-message', 'Employee ID not found!', 'error');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showMessage('auth-message', 'Error connecting to database. Please try again.', 'error');
             }
         }
 
         // Logout function
-        function logout() {
+        async function logout() {
             if (currentUser && currentUser.type === 'employee') {
-                const employee = mockEmployees.find(emp => emp.id === currentUser.id);
-                if (employee) {
-                    employee.status = 'logged-out';
-                    employee.loginTime = null;
+                try {
+                    await sheetsAPI.updateEmployeeStatus(currentUser.id, 'logged-out', null, currentUser.breakTime || 0);
+                } catch (error) {
+                    console.error('Logout error:', error);
                 }
             }
             
@@ -484,24 +663,35 @@
         }
 
         // Load admin dashboard
-        function loadAdminDashboard() {
-            updateStats();
-            renderEmployeeList();
+        async function loadAdminDashboard() {
+            try {
+                employees = await sheetsAPI.getEmployees();
+                updateStats();
+                renderEmployeeList();
+            } catch (error) {
+                console.error('Error loading admin dashboard:', error);
+                showMessage('add-employee-message', 'Error loading employee data.', 'error');
+            }
         }
 
         // Load employee dashboard
-        function loadEmployeeDashboard() {
-            const employee = mockEmployees.find(emp => emp.id === currentUser.id);
-            if (employee) {
-                updateEmployeeStatus(employee);
+        async function loadEmployeeDashboard() {
+            try {
+                employees = await sheetsAPI.getEmployees();
+                const employee = employees.find(emp => emp.id === currentUser.id);
+                if (employee) {
+                    updateEmployeeStatus(employee);
+                }
+            } catch (error) {
+                console.error('Error loading employee dashboard:', error);
             }
         }
 
         // Update statistics
         function updateStats() {
-            const totalEmployees = mockEmployees.length;
-            const loggedInCount = mockEmployees.filter(emp => emp.status !== 'logged-out').length;
-            const onBreakCount = mockEmployees.filter(emp => emp.status === 'on-break').length;
+            const totalEmployees = employees.length;
+            const loggedInCount = employees.filter(emp => emp.status !== 'logged-out').length;
+            const onBreakCount = employees.filter(emp => emp.status === 'on-break').length;
 
             document.getElementById('total-employees').textContent = totalEmployees;
             document.getElementById('logged-in-count').textContent = loggedInCount;
@@ -513,7 +703,7 @@
             const listEl = document.getElementById('employee-list');
             listEl.innerHTML = '';
 
-            mockEmployees.forEach(employee => {
+            employees.forEach(employee => {
                 const employeeEl = document.createElement('div');
                 employeeEl.className = 'employee-item';
                 
@@ -538,7 +728,7 @@
         }
 
         // Add new employee
-        function addEmployee() {
+        async function addEmployee() {
             const id = document.getElementById('new-employee-id').value;
             const name = document.getElementById('new-employee-name').value;
             const department = document.getElementById('new-employee-department').value;
@@ -549,59 +739,80 @@
                 return;
             }
 
-            if (mockEmployees.find(emp => emp.id === id)) {
-                showMessage('add-employee-message', 'Employee ID already exists!', 'error');
-                return;
+            try {
+                // Check if employee already exists
+                const currentEmployees = await sheetsAPI.getEmployees();
+                if (currentEmployees.find(emp => emp.id === id)) {
+                    showMessage('add-employee-message', 'Employee ID already exists!', 'error');
+                    return;
+                }
+
+                const newEmployee = { id, name, department, position };
+                
+                await sheetsAPI.addEmployee(newEmployee);
+                
+                // Clear form
+                document.getElementById('new-employee-id').value = '';
+                document.getElementById('new-employee-name').value = '';
+                document.getElementById('new-employee-department').value = '';
+                document.getElementById('new-employee-position').value = '';
+
+                showMessage('add-employee-message', 'Employee added successfully!', 'success');
+                
+                // Refresh the employee list
+                await loadAdminDashboard();
+                
+            } catch (error) {
+                console.error('Error adding employee:', error);
+                showMessage('add-employee-message', 'Error adding employee. Please try again.', 'error');
             }
-
-            const newEmployee = {
-                id,
-                name,
-                department,
-                position,
-                status: 'logged-out',
-                loginTime: null,
-                breakTime: 0,
-                lastActivity: new Date().toISOString()
-            };
-
-            mockEmployees.push(newEmployee);
-            
-            // Clear form
-            document.getElementById('new-employee-id').value = '';
-            document.getElementById('new-employee-name').value = '';
-            document.getElementById('new-employee-department').value = '';
-            document.getElementById('new-employee-position').value = '';
-
-            showMessage('add-employee-message', 'Employee added successfully!', 'success');
-            updateStats();
-            renderEmployeeList();
         }
 
         // Remove employee
-        function removeEmployee(employeeId) {
+        async function removeEmployee(employeeId) {
             if (confirm('Are you sure you want to remove this employee?')) {
-                mockEmployees = mockEmployees.filter(emp => emp.id !== employeeId);
-                updateStats();
-                renderEmployeeList();
+                try {
+                    await sheetsAPI.removeEmployee(employeeId);
+                    await loadAdminDashboard();
+                    showMessage('add-employee-message', 'Employee removed successfully!', 'success');
+                } catch (error) {
+                    console.error('Error removing employee:', error);
+                    showMessage('add-employee-message', 'Error removing employee. Please try again.', 'error');
+                }
             }
         }
 
         // Toggle break status
-        function toggleBreak() {
-            const employee = mockEmployees.find(emp => emp.id === currentUser.id);
-            if (employee) {
-                if (employee.status === 'working') {
-                    employee.status = 'on-break';
-                    employee.breakStartTime = new Date();
-                } else if (employee.status === 'on-break') {
-                    employee.status = 'working';
-                    if (employee.breakStartTime) {
-                        const breakDuration = (new Date() - employee.breakStartTime) / (1000 * 60);
-                        employee.breakTime += Math.round(breakDuration);
+        async function toggleBreak() {
+            try {
+                const employee = employees.find(emp => emp.id === currentUser.id);
+                if (employee) {
+                    let newStatus;
+                    let newBreakTime = employee.breakTime || 0;
+                    
+                    if (employee.status === 'working') {
+                        newStatus = 'on-break';
+                        employee.breakStartTime = new Date();
+                    } else if (employee.status === 'on-break') {
+                        newStatus = 'working';
+                        if (employee.breakStartTime) {
+                            const breakDuration = (new Date() - employee.breakStartTime) / (1000 * 60);
+                            newBreakTime += Math.round(breakDuration);
+                        }
                     }
+                    
+                    await sheetsAPI.updateEmployeeStatus(currentUser.id, newStatus, employee.loginTime, newBreakTime);
+                    
+                    // Update local data
+                    employee.status = newStatus;
+                    employee.breakTime = newBreakTime;
+                    currentUser.status = newStatus;
+                    currentUser.breakTime = newBreakTime;
+                    
+                    updateEmployeeStatus(employee);
                 }
-                updateEmployeeStatus(employee);
+            } catch (error) {
+                console.error('Error toggling break status:', error);
             }
         }
 
@@ -635,20 +846,29 @@
         }
 
         // Update employee data
-        function updateEmployeeData() {
+        async function updateEmployeeData() {
             if (currentUser && currentUser.type === 'employee') {
-                const employee = mockEmployees.find(emp => emp.id === currentUser.id);
-                if (employee) {
-                    updateEmployeeStatus(employee);
+                try {
+                    employees = await sheetsAPI.getEmployees();
+                    const employee = employees.find(emp => emp.id === currentUser.id);
+                    if (employee) {
+                        updateEmployeeStatus(employee);
+                    }
+                } catch (error) {
+                    console.error('Error updating employee data:', error);
                 }
             }
         }
 
-        // Load employee data (mock function - replace with Google Sheets API)
-        function loadEmployeeData() {
-            // This function would normally fetch data from Google Sheets
-            // For now, we're using mock data
-            console.log('Loading employee data...');
+        // Load employee data from Google Sheets
+        async function loadEmployeeData() {
+            try {
+                employees = await sheetsAPI.getEmployees();
+                console.log('Employee data loaded:', employees);
+            } catch (error) {
+                console.error('Error loading employee data:', error);
+                employees = []; // Fallback to empty array
+            }
         }
 
         // Show message function
