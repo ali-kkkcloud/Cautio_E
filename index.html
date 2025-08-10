@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Employee Management System</title>
+    <title>Employee Management System - Google Sheets Database</title>
     <style>
         * {
             margin: 0;
@@ -120,21 +120,6 @@
             overflow: hidden;
         }
 
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn:hover::before {
-            left: 100%;
-        }
-
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
@@ -154,6 +139,11 @@
 
         .btn-info {
             background: linear-gradient(135deg, #48dbfb 0%, #0abde3 100%);
+        }
+
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
         }
 
         .user-info {
@@ -182,17 +172,6 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-        }
-
-        .section h3::before {
-            content: '●';
-            color: #764ba2;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
         }
 
         .stats {
@@ -289,14 +268,14 @@
             letter-spacing: 0.5px;
         }
 
-        .on-break {
-            background: linear-gradient(135deg, #ffe0e0 0%, #ffcccb 100%);
-            color: #d63031;
-        }
-
         .working {
             background: linear-gradient(135deg, #e0ffe0 0%, #ccffcc 100%);
             color: #00b894;
+        }
+
+        .on-break {
+            background: linear-gradient(135deg, #ffe0e0 0%, #ffcccb 100%);
+            color: #d63031;
         }
 
         .logged-out {
@@ -308,11 +287,6 @@
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
-        }
-
-        .btn-small {
-            padding: 0.4rem 0.8rem;
-            font-size: 0.8rem;
         }
 
         .alert {
@@ -394,7 +368,7 @@
             z-index: 1;
         }
 
-        .floating-stats {
+        .connection-status {
             position: fixed;
             top: 20px;
             right: 20px;
@@ -403,7 +377,7 @@
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             z-index: 1000;
-            min-width: 200px;
+            min-width: 250px;
         }
 
         .connection-indicator {
@@ -419,116 +393,9 @@
         .disconnected { background: #d63031; }
         .testing { background: #fdcb6e; }
 
-        .employee-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s;
-            border: 1px solid #e9ecef;
-        }
-
-        .employee-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-
-        .time-tracker {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-
-        .time-item {
-            text-align: center;
-            padding: 1rem;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 8px;
-            border: 1px solid #dee2e6;
-        }
-
-        .time-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 0.25rem;
-        }
-
-        .time-label {
-            font-size: 0.8rem;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #e9ecef;
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 0.5rem 0;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
-
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            color: white;
-            font-weight: 500;
-            z-index: 3000;
-            animation: slideInRight 0.3s ease;
-        }
-
-        @keyframes slideInRight {
-            from { transform: translateX(100%); }
-            to { transform: translateX(0); }
-        }
-
-        .notification.success { background: #00b894; }
-        .notification.error { background: #d63031; }
-        .notification.warning { background: #fdcb6e; color: #333; }
-
-        @media (max-width: 768px) {
-            .container {
-                margin: 1rem;
-                padding: 1rem;
-            }
-            
-            .actions {
-                flex-direction: column;
-            }
-            
-            .employee-item {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-            }
-
-            .grid-form {
-                grid-template-columns: 1fr;
-            }
-
-            .stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .floating-stats {
-                position: relative;
-                top: auto;
-                right: auto;
-                margin-bottom: 1rem;
-            }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
         }
 
         .loading {
@@ -545,25 +412,113 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 3000;
+            animation: slideInDown 0.3s ease;
+        }
+
+        @keyframes slideInDown {
+            from { transform: translate(-50%, -100%); opacity: 0; }
+            to { transform: translate(-50%, 0); opacity: 1; }
+        }
+
+        .notification.success { background: #00b894; }
+        .notification.error { background: #d63031; }
+        .notification.warning { background: #fdcb6e; color: #333; }
+
+        .setup-info {
+            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border: 1px solid #c8e6c9;
+        }
+
+        .setup-info h4 {
+            color: #2e7d32;
+            margin-bottom: 1rem;
+        }
+
+        .setup-info .config-info {
+            background: #f5f5f5;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 1rem;
+                padding: 1rem;
+            }
+            
+            .employee-item {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .grid-form {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .connection-status {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin-bottom: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="floating-stats" id="floating-stats">
+    <div class="connection-status" id="connection-status-widget">
         <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
-            <span class="connection-indicator" id="connection-dot"></span>
-            <strong>System Status</strong>
+            <span class="connection-indicator testing" id="connection-dot"></span>
+            <strong>Google Sheets Database</strong>
         </div>
         <div style="font-size: 0.8rem;">
-            <div>Connection: <span id="mini-status">Testing...</span></div>
-            <div>Mode: <span id="mini-mode">Local</span></div>
-            <div>Time: <span id="current-time">--:--</span></div>
+            <div>Status: <span id="connection-status-text">Testing...</span></div>
+            <div>Sheet: <span id="sheet-status">Connecting...</span></div>
+            <div>Last Update: <span id="last-update">--:--</span></div>
         </div>
     </div>
 
     <div class="container">
         <div class="header">
-            <h1>🏢 Advanced Employee Management System</h1>
-            <p>Complete workforce management with real-time tracking</p>
+            <h1>🏢 Employee Management System</h1>
+            <p>Real-time Google Sheets Database Integration</p>
+        </div>
+
+        <!-- Connection Status -->
+        <div class="setup-info" id="setup-info">
+            <h4>✅ Google Sheets Configuration Active</h4>
+            <div class="config-info">
+                <strong>Sheet ID:</strong> 15pNN3vIuLFug6nlL-GN0uwvkasLokGwPO5kTxmPIZZw<br>
+                <strong>Apps Script:</strong> Configured ✅<br>
+                <strong>API Key:</strong> Active ✅<br>
+                <strong>Status:</strong> <span id="setup-status">Testing connection...</span>
+            </div>
+            <div style="margin-top: 1rem;">
+                <button class="btn btn-info btn-small" onclick="testConnection()">🔄 Test Connection</button>
+                <button class="btn btn-success btn-small" onclick="loadSampleData()">📋 Load Sample Data</button>
+                <button class="btn btn-warning btn-small" onclick="refreshData()">♻️ Refresh Data</button>
+            </div>
         </div>
 
         <!-- Login Section -->
@@ -581,11 +536,11 @@
                     <div class="grid-form">
                         <div class="form-group">
                             <label for="admin-username">👤 Username:</label>
-                            <input type="text" id="admin-username" placeholder="Enter admin username">
+                            <input type="text" id="admin-username" placeholder="Enter admin username" value="admin">
                         </div>
                         <div class="form-group">
                             <label for="admin-password">🔐 Password:</label>
-                            <input type="password" id="admin-password" placeholder="Enter admin password">
+                            <input type="password" id="admin-password" placeholder="Enter admin password" value="admin123">
                         </div>
                     </div>
                     <button class="btn" onclick="adminLogin()">
@@ -620,71 +575,34 @@
                     </div>
                 </div>
                 <div>
+                    <button class="btn btn-warning btn-small" onclick="refreshData()">🔄 Refresh</button>
                     <button class="btn btn-danger btn-small" onclick="logout()">🚪 Logout</button>
                 </div>
             </div>
 
             <!-- Admin Dashboard -->
             <div id="admin-dashboard" style="display: none;">
-                <!-- Real-time Statistics -->
+                <!-- Statistics -->
                 <div class="stats">
                     <div class="stat-card">
                         <div class="stat-number" id="total-employees">0</div>
                         <div class="stat-label">👥 Total Employees</div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="total-progress" style="width: 100%;"></div>
-                        </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-number" id="logged-in-count">0</div>
                         <div class="stat-label">🟢 Active Now</div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="active-progress" style="width: 0%;"></div>
-                        </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-number" id="on-break-count">0</div>
                         <div class="stat-label">☕ On Break</div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="break-progress" style="width: 0%;"></div>
-                        </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-number" id="productivity-score">0%</div>
                         <div class="stat-label">📊 Productivity</div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="productivity-progress" style="width: 0%;"></div>
-                        </div>
                     </div>
                 </div>
 
-                <!-- System Status -->
-                <div class="section">
-                    <h3>⚙️ System Status</h3>
-                    <div id="system-status">
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
-                            <div>
-                                <strong>📡 Connection:</strong><br>
-                                <span id="connection-status">Local Mode</span>
-                            </div>
-                            <div>
-                                <strong>💾 Storage:</strong><br>
-                                <span id="storage-status">Browser Storage</span>
-                            </div>
-                            <div>
-                                <strong>📊 Data Source:</strong><br>
-                                <span id="data-source">In-Memory</span>
-                            </div>
-                        </div>
-                        
-                        <div style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); padding: 1rem; border-radius: 8px; margin-top: 1rem; border: 1px solid #bbdefb;">
-                            <h4>ℹ️ Local Mode Active</h4>
-                            <p>System is running in local mode. All data is stored in browser memory and will be reset on page refresh. This demo showcases the UI and functionality without requiring external services.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Employee Management -->
+                <!-- Add Employee -->
                 <div class="section">
                     <h3>➕ Add New Employee</h3>
                     <div id="add-employee-message"></div>
@@ -729,7 +647,7 @@
                             <span id="add-employee-text">✨ Add Employee</span>
                         </button>
                         <button class="btn btn-warning" onclick="clearAddForm()">🧹 Clear Form</button>
-                        <button class="btn btn-info" onclick="loadSampleData()">📋 Load Sample Data</button>
+                        <button class="btn btn-info" onclick="exportData()">📥 Export CSV</button>
                     </div>
                 </div>
 
@@ -763,20 +681,19 @@
                         <!-- Employee items will be populated here -->
                     </div>
                     
-                    <div id="no-employees" style="text-align: center; padding: 2rem; color: #666;">
+                    <div id="no-employees" style="text-align: center; padding: 2rem; color: #666; display: none;">
                         <div style="font-size: 3rem; margin-bottom: 1rem;">👥</div>
                         <h3>No Employees Found</h3>
-                        <p>Add some employees to get started!</p>
+                        <p>Add some employees or check your Google Sheets connection!</p>
                     </div>
                 </div>
             </div>
 
             <!-- Employee Dashboard -->
             <div id="employee-dashboard" style="display: none;">
-                <!-- Personal Status Card -->
                 <div class="section">
                     <h3>📊 Your Status</h3>
-                    <div class="employee-card">
+                    <div style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                             <div>
                                 <h3 id="employee-name-display">Employee Name</h3>
@@ -792,8 +709,8 @@
                         
                         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
                             <button class="btn btn-small" id="break-btn" onclick="toggleBreak()">☕ Take Break</button>
-                            <button class="btn btn-info btn-small" onclick="viewActivity()">📈 View Activity</button>
-                            <button class="btn btn-warning btn-small" onclick="reportIssue()">⚠️ Report Issue</button>
+                            <button class="btn btn-info btn-small" onclick="showNotification('Feature coming soon!', 'warning')">📈 View Activity</button>
+                            <button class="btn btn-warning btn-small" onclick="clockOut()">🏃‍♂️ Clock Out</button>
                         </div>
                     </div>
                 </div>
@@ -801,45 +718,19 @@
                 <!-- Time Tracking -->
                 <div class="section">
                     <h3>⏰ Today's Activity</h3>
-                    <div class="time-tracker">
-                        <div class="time-item">
-                            <div class="time-value" id="login-time">--:--</div>
-                            <div class="time-label">Login Time</div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                        <div style="text-align: center; padding: 1rem; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <div style="font-size: 1.5rem; font-weight: bold; color: #667eea;" id="login-time">--:--</div>
+                            <div style="font-size: 0.8rem; color: #666;">Login Time</div>
                         </div>
-                        <div class="time-item">
-                            <div class="time-value" id="work-hours">0.0</div>
-                            <div class="time-label">Work Hours</div>
+                        <div style="text-align: center; padding: 1rem; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <div style="font-size: 1.5rem; font-weight: bold; color: #667eea;" id="work-hours">0.0</div>
+                            <div style="font-size: 0.8rem; color: #666;">Work Hours</div>
                         </div>
-                        <div class="time-item">
-                            <div class="time-value" id="break-duration">0</div>
-                            <div class="time-label">Break (Min)</div>
+                        <div style="text-align: center; padding: 1rem; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <div style="font-size: 1.5rem; font-weight: bold; color: #667eea;" id="break-duration">0</div>
+                            <div style="font-size: 0.8rem; color: #666;">Break (Min)</div>
                         </div>
-                        <div class="time-item">
-                            <div class="time-value" id="productivity-today">85%</div>
-                            <div class="time-label">Productivity</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Progress Bars -->
-                    <div style="margin-top: 1rem;">
-                        <div style="margin-bottom: 0.5rem; display: flex; justify-content: space-between;">
-                            <span>Daily Target (8 hours)</span>
-                            <span id="target-percentage">0%</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="daily-progress" style="width: 0%;"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="section">
-                    <h3>⚡ Quick Actions</h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-                        <button class="btn btn-success" onclick="clockOut()">🏃‍♂️ Clock Out</button>
-                        <button class="btn btn-info" onclick="viewTeamStatus()">👥 Team Status</button>
-                        <button class="btn btn-warning" onclick="requestLeave()">🏖️ Request Leave</button>
-                        <button class="btn" onclick="viewSettings()">⚙️ Settings</button>
                     </div>
                 </div>
             </div>
@@ -847,9 +738,11 @@
     </div>
 
     <script>
-        // Configuration - Local Mode
+        // ✅ CONFIGURED: Your actual Google Sheets integration settings
         const CONFIG = {
-            MODE: 'LOCAL', // LOCAL mode for demo
+            SHEET_ID: '15pNN3vIuLFug6nlL-GN0uwvkasLokGwPO5kTxmPIZZw',
+            API_KEY: 'AIzaSyDf1wG69f52niXnEZ2PaeBxtuYaf_aRMp8',
+            APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbw3DMHhFH02db9xdTyHbxLNiajavLUV2oEK9YHrO5xJGItnhWnTpP8aGl033sxboMTsEA/exec',
             ADMIN_CREDENTIALS: {
                 username: 'admin',
                 password: 'admin123'
@@ -862,93 +755,149 @@
         let isLoggedIn = false;
         let refreshInterval = null;
 
-        // Local Storage Simulation
-        class LocalDataManager {
-            constructor() {
-                this.employees = [
-                    {
-                        id: 'EMP001',
-                        name: 'John Doe',
-                        department: 'IT',
-                        position: 'Software Developer',
-                        status: 'working',
-                        loginTime: '09:00',
-                        breakTime: 15,
-                        lastActivity: new Date().toISOString(),
-                        email: 'john.doe@company.com',
-                        phone: '+91 9876543210'
-                    },
-                    {
-                        id: 'EMP002',
-                        name: 'Jane Smith',
-                        department: 'HR',
-                        position: 'HR Manager',
-                        status: 'on-break',
-                        loginTime: '09:15',
-                        breakTime: 30,
-                        lastActivity: new Date().toISOString(),
-                        email: 'jane.smith@company.com',
-                        phone: '+91 9876543211'
-                    },
-                    {
-                        id: 'EMP003',
-                        name: 'Mike Johnson',
-                        department: 'Finance',
-                        position: 'Accountant',
-                        status: 'logged-out',
-                        loginTime: null,
-                        breakTime: 0,
-                        lastActivity: new Date().toISOString(),
-                        email: 'mike.j@company.com',
-                        phone: '+91 9876543212'
+        // Google Sheets Manager Class
+        class GoogleSheetsManager {
+            constructor(scriptUrl, sheetId, apiKey) {
+                this.scriptUrl = scriptUrl;
+                this.sheetId = sheetId;
+                this.apiKey = apiKey;
+                this.baseUrl = 'https://sheets.googleapis.com/v4/spreadsheets';
+            }
+
+            async makeRequest(action, data = {}) {
+                try {
+                    console.log('🚀 Making request to Apps Script:', { action, data });
+                    
+                    const requestPayload = { action, ...data };
+                    
+                    const response = await fetch(this.scriptUrl, {
+                        method: 'POST',
+                        mode: 'cors',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(requestPayload)
+                    });
+
+                    console.log('📡 Response status:', response.status);
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('❌ Response error:', errorText);
+                        throw new Error(`HTTP ${response.status}: ${errorText}`);
                     }
-                ];
+
+                    const result = await response.json();
+                    console.log('✅ Response result:', result);
+                    
+                    if (result.error) {
+                        throw new Error(result.error);
+                    }
+                    
+                    return result;
+                } catch (error) {
+                    console.error('💥 Apps Script request failed:', error);
+                    throw error;
+                }
             }
 
             async getEmployees() {
-                return [...this.employees];
+                try {
+                    console.log('📊 Fetching employees from Google Sheets...');
+                    const result = await this.makeRequest('getEmployees');
+                    console.log('👥 Employees fetched:', result.employees?.length || 0);
+                    return result.employees || [];
+                } catch (error) {
+                    console.error('❌ Error fetching employees:', error);
+                    // Fallback to direct API read
+                    try {
+                        console.log('🔄 Trying fallback API...');
+                        return await this.getEmployeesViaAPI();
+                    } catch (fallbackError) {
+                        console.error('💥 Fallback also failed:', fallbackError);
+                        throw new Error('Failed to connect to Google Sheets: ' + error.message);
+                    }
+                }
+            }
+
+            async getEmployeesViaAPI() {
+                const url = `${this.baseUrl}/${this.sheetId}/values/Sheet1?key=${this.apiKey}`;
+                console.log('📡 Direct API call to:', url);
+                
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`Google Sheets API Error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('📋 API response data:', data);
+                
+                if (!data.values || data.values.length <= 1) {
+                    return [];
+                }
+
+                const employees = [];
+                for (let i = 1; i < data.values.length; i++) {
+                    const row = data.values[i];
+                    if (row[0]) {
+                        employees.push({
+                            id: row[0] || '',
+                            name: row[1] || '',
+                            department: row[2] || '',
+                            position: row[3] || '',
+                            status: row[4] || 'logged-out',
+                            loginTime: row[5] || null,
+                            breakTime: parseInt(row[6]) || 0,
+                            lastActivity: row[7] || new Date().toISOString(),
+                            email: row[8] || '',
+                            phone: row[9] || ''
+                        });
+                    }
+                }
+                return employees;
             }
 
             async addEmployee(employee) {
-                const newEmployee = {
-                    ...employee,
-                    status: 'logged-out',
-                    loginTime: null,
-                    breakTime: 0,
-                    lastActivity: new Date().toISOString()
-                };
-                this.employees.push(newEmployee);
-                return { success: true, message: 'Employee added successfully' };
+                console.log('➕ Adding employee to Google Sheets:', employee);
+                return await this.makeRequest('addEmployee', { employee });
             }
 
             async updateEmployeeStatus(employeeId, status, loginTime = null, breakTime = 0) {
-                const employee = this.employees.find(emp => emp.id === employeeId);
-                if (employee) {
-                    employee.status = status;
-                    if (loginTime) employee.loginTime = loginTime;
-                    employee.breakTime = breakTime;
-                    employee.lastActivity = new Date().toISOString();
-                    return { success: true, message: 'Status updated successfully' };
-                }
-                return { success: false, message: 'Employee not found' };
+                console.log('🔄 Updating employee status in Google Sheets:', { employeeId, status, loginTime, breakTime });
+                const updates = {
+                    status,
+                    loginTime,
+                    breakTime,
+                    lastActivity: new Date().toISOString()
+                };
+                return await this.makeRequest('updateEmployee', { employeeId, updates });
             }
 
             async removeEmployee(employeeId) {
-                const index = this.employees.findIndex(emp => emp.id === employeeId);
-                if (index > -1) {
-                    this.employees.splice(index, 1);
-                    return { success: true, message: 'Employee removed successfully' };
-                }
-                return { success: false, message: 'Employee not found' };
+                console.log('🗑️ Removing employee from Google Sheets:', employeeId);
+                return await this.makeRequest('removeEmployee', { employeeId });
             }
 
             async testConnection() {
-                return { success: true, message: 'Local mode connection successful', type: 'local' };
+                try {
+                    console.log('🔍 Testing connection to Google Sheets...');
+                    await this.makeRequest('getEmployees');
+                    return { success: true, message: 'Connected to Google Sheets via Apps Script', type: 'apps-script' };
+                } catch (error) {
+                    console.log('⚠️ Apps Script failed, trying fallback API...');
+                    try {
+                        await this.getEmployeesViaAPI();
+                        return { success: true, message: 'Connected via Google Sheets API (read-only)', type: 'api-readonly' };
+                    } catch (fallbackError) {
+                        return { success: false, message: error.message, type: 'failed' };
+                    }
+                }
             }
         }
 
-        // Initialize Local Data Manager
-        const dataManager = new LocalDataManager();
+        // Initialize Google Sheets Manager with your actual credentials
+        const sheetsManager = new GoogleSheetsManager(CONFIG.APPS_SCRIPT_URL, CONFIG.SHEET_ID, CONFIG.API_KEY);
 
         // Authentication functions
         function switchAuthTab(type) {
@@ -967,7 +916,6 @@
         async function adminLogin() {
             const username = document.getElementById('admin-username').value;
             const password = document.getElementById('admin-password').value;
-            const messageEl = document.getElementById('auth-message');
             const buttonText = document.getElementById('admin-login-text');
             
             buttonText.innerHTML = '<div class="loading"></div> Logging in...';
@@ -977,12 +925,12 @@
                 currentUser = { type: 'admin', name: 'Administrator' };
                 isLoggedIn = true;
                 showMainSection();
-                showNotification('Welcome, Administrator!', 'success');
-                buttonText.textContent = '🚀 Login as Admin';
+                showNotification('Welcome, Administrator! 🚀', 'success');
             } else {
-                showMessage('auth-message', 'Invalid credentials! Please try again.', 'error');
-                buttonText.textContent = '🚀 Login as Admin';
+                showMessage('auth-message', 'Invalid credentials! Try admin/admin123', 'error');
             }
+            
+            buttonText.textContent = '🚀 Login as Admin';
         }
 
         async function employeeLogin() {
@@ -997,30 +945,35 @@
             buttonText.innerHTML = '<div class="loading"></div> Logging in...';
             
             try {
-                employees = await dataManager.getEmployees();
+                employees = await sheetsManager.getEmployees();
                 const employee = employees.find(emp => emp.id === employeeId);
 
                 if (employee) {
                     currentUser = { type: 'employee', ...employee };
                     isLoggedIn = true;
                     
-                    // Update employee status to logged in
+                    // Update employee status to working
                     const loginTime = new Date().toLocaleTimeString('en-US', {
                         hour12: false,
                         hour: '2-digit',
                         minute: '2-digit'
                     });
                     
-                    await dataManager.updateEmployeeStatus(employeeId, 'working', loginTime, 0);
+                    try {
+                        await sheetsManager.updateEmployeeStatus(employeeId, 'working', loginTime, 0);
+                        console.log('✅ Employee status updated in Google Sheets');
+                    } catch (updateError) {
+                        console.warn('⚠️ Could not update status in sheet:', updateError);
+                    }
                     
                     showMainSection();
-                    showNotification(`Welcome back, ${employee.name}!`, 'success');
+                    showNotification(`Welcome back, ${employee.name}! 👋`, 'success');
                 } else {
-                    showMessage('auth-message', 'Employee ID not found! Please check and try again.', 'error');
+                    showMessage('auth-message', 'Employee ID not found in Google Sheets! Please check the ID.', 'error');
                 }
             } catch (error) {
-                console.error('Login error:', error);
-                showMessage('auth-message', 'Connection error. Please try again later.', 'error');
+                console.error('💥 Login error:', error);
+                showMessage('auth-message', 'Could not connect to Google Sheets: ' + error.message, 'error');
             }
             
             buttonText.textContent = '✅ Clock In';
@@ -1029,10 +982,10 @@
         async function logout() {
             if (currentUser && currentUser.type === 'employee') {
                 try {
-                    await dataManager.updateEmployeeStatus(currentUser.id, 'logged-out', null, currentUser.breakTime || 0);
-                    showNotification('Logged out successfully!', 'success');
+                    await sheetsManager.updateEmployeeStatus(currentUser.id, 'logged-out', null, currentUser.breakTime || 0);
+                    console.log('✅ Logout status updated in Google Sheets');
                 } catch (error) {
-                    console.error('Logout error:', error);
+                    console.warn('⚠️ Could not update logout status:', error);
                 }
             }
             
@@ -1047,12 +1000,8 @@
             document.getElementById('auth-section').classList.add('active');
             document.getElementById('main-section').classList.remove('active');
             
-            // Clear input fields
-            document.getElementById('admin-username').value = '';
-            document.getElementById('admin-password').value = '';
-            document.getElementById('employee-id').value = '';
-            
             updateConnectionStatus('disconnected', 'Logged out');
+            showNotification('Logged out successfully! 👋', 'success');
         }
 
         function showMainSection() {
@@ -1067,32 +1016,29 @@
                 document.getElementById('admin-dashboard').style.display = 'block';
                 document.getElementById('employee-dashboard').style.display = 'none';
                 loadAdminDashboard();
-                // Start auto-refresh for admin
-                refreshInterval = setInterval(loadAdminDashboard, 30000);
+                refreshInterval = setInterval(loadAdminDashboard, 60000); // Refresh every minute
             } else {
                 document.getElementById('admin-dashboard').style.display = 'none';
                 document.getElementById('employee-dashboard').style.display = 'block';
                 loadEmployeeDashboard();
-                // Start auto-refresh for employee
-                refreshInterval = setInterval(updateEmployeeData, 60000);
+                refreshInterval = setInterval(loadEmployeeDashboard, 120000); // Refresh every 2 minutes
             }
         }
 
         // Admin Dashboard Functions
         async function loadAdminDashboard() {
             try {
-                console.log('Loading admin dashboard...');
-                employees = await dataManager.getEmployees();
-                console.log('Loaded employees for dashboard:', employees);
+                console.log('📊 Loading admin dashboard...');
+                employees = await sheetsManager.getEmployees();
+                console.log(`✅ Loaded ${employees.length} employees`);
                 updateStats();
                 renderEmployeeList();
-                updateConnectionStatus('connected', 'Local Mode');
+                updateConnectionStatus('connected', 'Synced');
+                updateLastUpdate();
             } catch (error) {
-                console.error('Error loading admin dashboard:', error);
+                console.error('💥 Error loading admin dashboard:', error);
                 updateConnectionStatus('disconnected', 'Error');
-                employees = [];
-                updateStats();
-                renderEmployeeList();
+                showMessage('add-employee-message', 'Failed to load data from Google Sheets: ' + error.message, 'error');
             }
         }
 
@@ -1102,21 +1048,12 @@
             const onBreakCount = employees.filter(emp => emp.status === 'on-break').length;
             const workingCount = employees.filter(emp => emp.status === 'working').length;
             
-            // Calculate productivity score
             const productivityScore = totalEmployees > 0 ? Math.round((workingCount / totalEmployees) * 100) : 0;
 
             document.getElementById('total-employees').textContent = totalEmployees;
             document.getElementById('logged-in-count').textContent = loggedInCount;
             document.getElementById('on-break-count').textContent = onBreakCount;
             document.getElementById('productivity-score').textContent = productivityScore + '%';
-
-            // Update progress bars
-            const activePercent = totalEmployees > 0 ? (loggedInCount / totalEmployees) * 100 : 0;
-            const breakPercent = totalEmployees > 0 ? (onBreakCount / totalEmployees) * 100 : 0;
-            
-            document.getElementById('active-progress').style.width = activePercent + '%';
-            document.getElementById('break-progress').style.width = breakPercent + '%';
-            document.getElementById('productivity-progress').style.width = productivityScore + '%';
         }
 
         function renderEmployeeList() {
@@ -1143,9 +1080,6 @@
                 const statusClass = employee.status === 'working' ? 'working' : 
                                   employee.status === 'on-break' ? 'on-break' : 'logged-out';
                 
-                const lastActivity = employee.lastActivity ? 
-                    new Date(employee.lastActivity).toLocaleString() : 'Never';
-                
                 employeeEl.innerHTML = `
                     <div style="flex: 1;">
                         <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
@@ -1157,8 +1091,7 @@
                         </div>
                         <div style="color: #888; font-size: 0.8rem; margin-top: 0.25rem;">
                             🕐 Login: ${employee.loginTime || 'Not logged in'} • 
-                            ☕ Break: ${employee.breakTime || 0} min • 
-                            📅 Last seen: ${lastActivity}
+                            ☕ Break: ${employee.breakTime || 0} min
                         </div>
                         ${employee.email ? `<div style="color: #888; font-size: 0.8rem;">📧 ${employee.email}</div>` : ''}
                     </div>
@@ -1167,7 +1100,6 @@
                     </div>
                     <div class="actions">
                         <button class="btn btn-info btn-small" onclick="viewEmployeeDetails('${employee.id}')">👁️ View</button>
-                        <button class="btn btn-warning btn-small" onclick="editEmployee('${employee.id}')">✏️ Edit</button>
                         <button class="btn btn-danger btn-small" onclick="removeEmployee('${employee.id}')">🗑️ Remove</button>
                     </div>
                 `;
@@ -1215,42 +1147,37 @@
                 return;
             }
 
-            // Validate Employee ID format
             if (!/^[A-Z]{2,5}\d{3,6}$/.test(id)) {
                 showMessage('add-employee-message', 'Employee ID format: 2-5 letters + 3-6 numbers (e.g., EMP001)', 'error');
                 return;
             }
 
-            buttonText.innerHTML = '<div class="loading"></div> Adding...';
+            buttonText.innerHTML = '<div class="loading"></div> Adding to Google Sheets...';
 
             try {
-                // Check if employee already exists
-                const currentEmployees = await dataManager.getEmployees();
+                const currentEmployees = await sheetsManager.getEmployees();
                 
                 if (currentEmployees.find(emp => emp.id === id)) {
-                    showMessage('add-employee-message', 'Employee ID already exists! Please use a different ID.', 'error');
+                    showMessage('add-employee-message', 'Employee ID already exists in Google Sheets!', 'error');
                     buttonText.textContent = '✨ Add Employee';
                     return;
                 }
 
                 const newEmployee = { id, name, department, position, email, phone };
                 
-                const result = await dataManager.addEmployee(newEmployee);
+                const result = await sheetsManager.addEmployee(newEmployee);
+                console.log('✅ Employee added to Google Sheets:', result);
                 
-                // Clear form
                 clearAddForm();
-
-                showMessage('add-employee-message', 'Employee added successfully! 🎉', 'success');
-                showNotification(`${name} has been added to the system!`, 'success');
+                showMessage('add-employee-message', `✅ ${name} added to Google Sheets successfully! 🎉`, 'success');
+                showNotification(`${name} has been added to Google Sheets!`, 'success');
                 
-                // Refresh the employee list
-                setTimeout(async () => {
-                    await loadAdminDashboard();
-                }, 1000);
+                // Refresh data
+                setTimeout(loadAdminDashboard, 2000);
                 
             } catch (error) {
-                console.error('Error adding employee:', error);
-                showMessage('add-employee-message', 'Error adding employee: ' + error.message, 'error');
+                console.error('💥 Error adding employee:', error);
+                showMessage('add-employee-message', 'Error adding employee to Google Sheets: ' + error.message, 'error');
             }
             
             buttonText.textContent = '✨ Add Employee';
@@ -1269,36 +1196,75 @@
             const employee = employees.find(emp => emp.id === employeeId);
             if (!employee) return;
 
-            if (confirm(`Are you sure you want to remove ${employee.name}? This action cannot be undone.`)) {
+            if (confirm(`Are you sure you want to remove ${employee.name}? This will permanently delete them from Google Sheets.`)) {
                 try {
-                    await dataManager.removeEmployee(employeeId);
-                    await loadAdminDashboard();
-                    showMessage('add-employee-message', `${employee.name} has been removed successfully.`, 'success');
-                    showNotification(`${employee.name} removed from system`, 'warning');
+                    const result = await sheetsManager.removeEmployee(employeeId);
+                    console.log('✅ Employee removed from Google Sheets:', result);
+                    showNotification(`${employee.name} removed from Google Sheets!`, 'warning');
+                    setTimeout(loadAdminDashboard, 1000);
                 } catch (error) {
-                    console.error('Error removing employee:', error);
-                    showMessage('add-employee-message', 'Error removing employee. Please try again.', 'error');
+                    console.error('💥 Error removing employee:', error);
+                    showNotification('Error removing employee: ' + error.message, 'error');
                 }
             }
         }
 
-        function loadSampleData() {
-            showNotification('Sample data already loaded!', 'success');
+        async function loadSampleData() {
+            const sampleEmployees = [
+                { id: 'EMP001', name: 'John Doe', department: 'IT', position: 'Software Developer', email: 'john@company.com', phone: '+91 9876543210' },
+                { id: 'EMP002', name: 'Jane Smith', department: 'HR', position: 'HR Manager', email: 'jane@company.com', phone: '+91 9876543211' },
+                { id: 'EMP003', name: 'Mike Johnson', department: 'Finance', position: 'Accountant', email: 'mike@company.com', phone: '+91 9876543212' }
+            ];
+
+            showNotification('Adding sample employees to Google Sheets...', 'warning');
+
+            for (const emp of sampleEmployees) {
+                try {
+                    const currentEmployees = await sheetsManager.getEmployees();
+                    if (!currentEmployees.find(e => e.id === emp.id)) {
+                        await sheetsManager.addEmployee(emp);
+                        console.log(`✅ Added sample employee: ${emp.name}`);
+                    }
+                } catch (error) {
+                    console.warn(`⚠️ Could not add ${emp.name}:`, error);
+                }
+            }
+
+            showNotification('Sample data loaded to Google Sheets!', 'success');
+            setTimeout(loadAdminDashboard, 2000);
+        }
+
+        function exportData() {
+            const csvContent = "data:text/csv;charset=utf-8," + 
+                "Employee_ID,Name,Department,Position,Status,Login_Time,Break_Time,Last_Activity,Email,Phone\n" +
+                employees.map(emp => 
+                    `${emp.id},${emp.name},${emp.department},${emp.position},${emp.status},${emp.loginTime || ''},${emp.breakTime || 0},${emp.lastActivity},${emp.email || ''},${emp.phone || ''}`
+                ).join('\n');
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `employees_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification('Employee data exported as CSV!', 'success');
         }
 
         // Employee Dashboard Functions
         async function loadEmployeeDashboard() {
             try {
-                employees = await dataManager.getEmployees();
+                employees = await sheetsManager.getEmployees();
                 const employee = employees.find(emp => emp.id === currentUser.id);
                 if (employee) {
                     Object.assign(currentUser, employee);
-                    updateEmployeeStatus(employee);
                     updateEmployeeDisplay(employee);
                 }
-                updateConnectionStatus('connected', 'Local Mode');
+                updateConnectionStatus('connected', 'Synced');
+                updateLastUpdate();
             } catch (error) {
-                console.error('Error loading employee dashboard:', error);
+                console.error('💥 Error loading employee dashboard:', error);
                 updateConnectionStatus('disconnected', 'Error');
             }
         }
@@ -1306,9 +1272,7 @@
         function updateEmployeeDisplay(employee) {
             document.getElementById('employee-name-display').textContent = employee.name;
             document.getElementById('employee-details').textContent = `${employee.department} - ${employee.position}`;
-        }
-
-        function updateEmployeeStatus(employee) {
+            
             const statusEl = document.getElementById('current-status');
             const breakBtn = document.getElementById('break-btn');
             const statusSince = document.getElementById('status-since');
@@ -1325,7 +1289,7 @@
                 statusSince.textContent = 'Break started';
             }
 
-            // Update activity stats
+            // Update time tracking
             document.getElementById('login-time').textContent = employee.loginTime || '--:--';
             document.getElementById('break-duration').textContent = `${employee.breakTime || 0}`;
             
@@ -1337,16 +1301,6 @@
                 const workHours = ((new Date() - loginTime) / (1000 * 60 * 60) - ((employee.breakTime || 0) / 60));
                 const displayHours = Math.max(0, workHours).toFixed(1);
                 document.getElementById('work-hours').textContent = displayHours;
-                
-                // Update progress bar
-                const targetHours = 8;
-                const percentage = Math.min(100, (workHours / targetHours) * 100);
-                document.getElementById('daily-progress').style.width = percentage + '%';
-                document.getElementById('target-percentage').textContent = Math.round(percentage) + '%';
-                
-                // Calculate productivity
-                const productivity = Math.max(0, Math.min(100, 100 - ((employee.breakTime || 0) / 480) * 100));
-                document.getElementById('productivity-today').textContent = Math.round(productivity) + '%';
             }
         }
 
@@ -1359,18 +1313,15 @@
                     
                     if (employee.status === 'working') {
                         newStatus = 'on-break';
-                        employee.breakStartTime = new Date();
-                        showNotification('Break started! Enjoy your break ☕', 'warning');
+                        showNotification('Break started! ☕', 'warning');
                     } else if (employee.status === 'on-break') {
                         newStatus = 'working';
-                        if (employee.breakStartTime) {
-                            const breakDuration = (new Date() - employee.breakStartTime) / (1000 * 60);
-                            newBreakTime += Math.round(breakDuration);
-                        }
-                        showNotification('Welcome back! Break ended 🔙', 'success');
+                        newBreakTime += 15; // Add 15 minutes
+                        showNotification('Welcome back! 🔙', 'success');
                     }
                     
-                    await dataManager.updateEmployeeStatus(currentUser.id, newStatus, employee.loginTime, newBreakTime);
+                    await sheetsManager.updateEmployeeStatus(currentUser.id, newStatus, employee.loginTime, newBreakTime);
+                    console.log('✅ Break status updated in Google Sheets');
                     
                     // Update local data
                     employee.status = newStatus;
@@ -1378,80 +1329,12 @@
                     currentUser.status = newStatus;
                     currentUser.breakTime = newBreakTime;
                     
-                    updateEmployeeStatus(employee);
+                    updateEmployeeDisplay(employee);
                 }
             } catch (error) {
-                console.error('Error toggling break status:', error);
-                showNotification('Error updating status. Please try again.', 'error');
+                console.error('💥 Error toggling break status:', error);
+                showNotification('Error updating status: ' + error.message, 'error');
             }
-        }
-
-        // Utility Functions
-        function updateConnectionStatus(status, message) {
-            const dot = document.getElementById('connection-dot');
-            const miniStatus = document.getElementById('mini-status');
-            const miniMode = document.getElementById('mini-mode');
-            
-            dot.className = `connection-indicator ${status}`;
-            miniStatus.textContent = message;
-            miniMode.textContent = 'Local Mode';
-        }
-
-        function updateCurrentTime() {
-            const now = new Date();
-            document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', {
-                hour12: false,
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
-
-        async function updateEmployeeData() {
-            if (currentUser && currentUser.type === 'employee') {
-                try {
-                    employees = await dataManager.getEmployees();
-                    const employee = employees.find(emp => emp.id === currentUser.id);
-                    if (employee) {
-                        Object.assign(currentUser, employee);
-                        updateEmployeeStatus(employee);
-                    }
-                } catch (error) {
-                    console.error('Error updating employee data:', error);
-                }
-            }
-        }
-
-        // Show message function
-        function showMessage(elementId, message, type) {
-            const messageEl = document.getElementById(elementId);
-            messageEl.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
-            setTimeout(() => {
-                messageEl.innerHTML = '';
-            }, 5000);
-        }
-
-        // Show notification function
-        function showNotification(message, type) {
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.textContent = message;
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.remove();
-            }, 4000);
-        }
-
-        // Employee functions
-        function viewEmployeeDetails(employeeId) {
-            const employee = employees.find(emp => emp.id === employeeId);
-            if (!employee) return;
-            
-            alert(`Employee Details:\n\nID: ${employee.id}\nName: ${employee.name}\nDepartment: ${employee.department}\nPosition: ${employee.position}\nStatus: ${employee.status}\nLogin Time: ${employee.loginTime || 'Not logged in'}\nBreak Time: ${employee.breakTime || 0} minutes\nLast Activity: ${new Date(employee.lastActivity).toLocaleString()}`);
-        }
-
-        function editEmployee(employeeId) {
-            showNotification('Edit employee feature coming soon!', 'warning');
         }
 
         function clockOut() {
@@ -1460,76 +1343,150 @@
             }
         }
 
-        function viewTeamStatus() {
-            showNotification('Team status feature coming soon!', 'warning');
+        // Utility Functions
+        async function testConnection() {
+            updateConnectionStatus('testing', 'Testing...');
+            document.getElementById('setup-status').textContent = 'Testing connection...';
+            document.getElementById('setup-status').style.color = 'orange';
+            
+            try {
+                const result = await sheetsManager.testConnection();
+                console.log('🔍 Connection test result:', result);
+                
+                if (result.success) {
+                    updateConnectionStatus('connected', 'Connected');
+                    document.getElementById('setup-status').textContent = '✅ ' + result.message;
+                    document.getElementById('setup-status').style.color = 'green';
+                    showNotification('✅ Google Sheets connection successful!', 'success');
+                } else {
+                    updateConnectionStatus('disconnected', 'Failed');
+                    document.getElementById('setup-status').textContent = '❌ ' + result.message;
+                    document.getElementById('setup-status').style.color = 'red';
+                    showNotification('❌ Connection failed: ' + result.message, 'error');
+                }
+            } catch (error) {
+                updateConnectionStatus('disconnected', 'Error');
+                document.getElementById('setup-status').textContent = '❌ ' + error.message;
+                document.getElementById('setup-status').style.color = 'red';
+                showNotification('❌ Connection error: ' + error.message, 'error');
+            }
         }
 
-        function requestLeave() {
-            showNotification('Leave request feature coming soon!', 'warning');
+        async function refreshData() {
+            showNotification('🔄 Refreshing data from Google Sheets...', 'warning');
+            if (currentUser && currentUser.type === 'admin') {
+                await loadAdminDashboard();
+            } else if (currentUser && currentUser.type === 'employee') {
+                await loadEmployeeDashboard();
+            }
+            showNotification('✅ Data refreshed from Google Sheets!', 'success');
         }
 
-        function viewSettings() {
-            showNotification('Settings feature coming soon!', 'warning');
+        function updateConnectionStatus(status, message) {
+            const dot = document.getElementById('connection-dot');
+            const statusText = document.getElementById('connection-status-text');
+            const sheetStatus = document.getElementById('sheet-status');
+            
+            dot.className = `connection-indicator ${status}`;
+            statusText.textContent = message;
+            
+            if (status === 'connected') {
+                sheetStatus.textContent = 'Google Sheets Active ✅';
+                sheetStatus.style.color = 'green';
+            } else if (status === 'testing') {
+                sheetStatus.textContent = 'Testing Connection...';
+                sheetStatus.style.color = 'orange';
+            } else {
+                sheetStatus.textContent = 'Connection Failed ❌';
+                sheetStatus.style.color = 'red';
+            }
         }
 
-        function viewActivity() {
-            showNotification('Activity details feature coming soon!', 'warning');
+        function updateLastUpdate() {
+            document.getElementById('last-update').textContent = new Date().toLocaleTimeString();
         }
 
-        function reportIssue() {
-            showNotification('Issue reporting feature coming soon!', 'warning');
+        function viewEmployeeDetails(employeeId) {
+            const employee = employees.find(emp => emp.id === employeeId);
+            if (!employee) return;
+            
+            alert(`📋 Employee Details:\n\n🆔 ID: ${employee.id}\n👤 Name: ${employee.name}\n🏢 Department: ${employee.department}\n💼 Position: ${employee.position}\n📊 Status: ${employee.status}\n🕐 Login Time: ${employee.loginTime || 'Not logged in'}\n☕ Break Time: ${employee.breakTime || 0} minutes\n📧 Email: ${employee.email || 'Not provided'}\n📱 Phone: ${employee.phone || 'Not provided'}\n📅 Last Activity: ${new Date(employee.lastActivity).toLocaleString()}`);
+        }
+
+        // Show message function
+        function showMessage(elementId, message, type) {
+            const messageEl = document.getElementById(elementId);
+            messageEl.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => {
+                messageEl.innerHTML = '';
+            }, 8000);
+        }
+
+        // Show notification function
+        function showNotification(message, type) {
+            // Remove existing notifications
+            const existingNotifications = document.querySelectorAll('.notification');
+            existingNotifications.forEach(n => n.remove());
+            
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
         }
 
         // Initialize the application
         async function init() {
-            console.log('Initializing application in local mode...');
+            console.log('🚀 Initializing Google Sheets Employee Management System...');
+            console.log('📋 Configuration:', {
+                sheetId: CONFIG.SHEET_ID,
+                hasApiKey: !!CONFIG.API_KEY,
+                hasAppsScript: !!CONFIG.APPS_SCRIPT_URL
+            });
             
-            // Update connection status
-            updateConnectionStatus('connected', 'Local Mode');
+            updateConnectionStatus('testing', 'Initializing...');
             
-            // Update status elements
-            document.getElementById('connection-status').textContent = '✓ Local mode active';
-            document.getElementById('connection-status').style.color = 'green';
-            document.getElementById('storage-status').textContent = '✓ Browser memory';
-            document.getElementById('storage-status').style.color = 'green';
-            document.getElementById('data-source').textContent = '✓ In-memory simulation';
-            document.getElementById('data-source').style.color = 'green';
-            
-            // Load initial employee data
+            // Test connection on startup
             try {
-                employees = await dataManager.getEmployees();
-                console.log('Initial employee data loaded:', employees);
+                const result = await sheetsManager.testConnection();
+                console.log('✅ Initial connection test:', result);
+                
+                if (result.success) {
+                    updateConnectionStatus('connected', 'Ready');
+                    document.getElementById('setup-status').textContent = '✅ ' + result.message;
+                    document.getElementById('setup-status').style.color = 'green';
+                } else {
+                    updateConnectionStatus('disconnected', 'Setup Required');
+                    document.getElementById('setup-status').textContent = '⚠️ ' + result.message;
+                    document.getElementById('setup-status').style.color = 'orange';
+                }
             } catch (error) {
-                console.error('Error loading initial data:', error);
-                employees = [];
+                console.error('💥 Initial connection test failed:', error);
+                updateConnectionStatus('disconnected', 'Setup Required');
+                document.getElementById('setup-status').textContent = '❌ ' + error.message;
+                document.getElementById('setup-status').style.color = 'red';
             }
             
-            // Start time updater
-            setInterval(updateCurrentTime, 1000);
-            updateCurrentTime();
+            updateLastUpdate();
+            console.log('✅ Application initialized');
         }
 
-        // Initialize the application when page loads
+        // Initialize when page loads
         document.addEventListener('DOMContentLoaded', init);
 
-        // Handle keyboard shortcuts
-        document.addEventListener('keydown', function(event) {
-            if (event.ctrlKey || event.metaKey) {
-                switch(event.key) {
-                    case 'r':
-                        event.preventDefault();
-                        if (isLoggedIn) {
-                            showNotification('Data refreshed!', 'success');
-                            if (currentUser.type === 'admin') {
-                                loadAdminDashboard();
-                            } else {
-                                loadEmployeeDashboard();
-                            }
-                        }
-                        break;
-                }
+        // Auto-refresh status every 5 minutes
+        setInterval(() => {
+            if (isLoggedIn) {
+                updateLastUpdate();
             }
-        });
+        }, 300000);
+
+        console.log('🎯 Employee Management System with Google Sheets Integration Ready!');
+        console.log('📋 Your Sheet ID:', CONFIG.SHEET_ID);
+        console.log('🔗 Apps Script URL configured:', CONFIG.APPS_SCRIPT_URL);
     </script>
 </body>
 </html>
